@@ -1,0 +1,4004 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard Grosir</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+/* STYLE UTAMA */
+:root {
+  --primary: #0f172a;
+  --primary-light: #1e293b;
+  --secondary: #3b82f6;
+  --danger: #ef4444;
+  --success: #10b981;
+  --warning: #f59e0b;
+  --light: #f8fafc;
+  --gray: #64748b;
+  --border: #e5e7eb;
+  --shadow: 0 8px 20px rgba(0,0,0,0.08);
+  --radius: 12px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', Arial, sans-serif;
+}
+
+body {
+  background: #f1f5f9;
+  color: #1e293b;
+  min-height: 100vh;
+}
+
+/* LOGIN PAGE */
+.login-container {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  padding: 20px;
+}
+
+.login-card {
+  background: white;
+  padding: 40px;
+  border-radius: 20px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+  text-align: center;
+  animation: fadeIn 0.5s ease;
+}
+
+.login-card h2 {
+  margin-bottom: 8px;
+  color: var(--primary);
+  font-size: 28px;
+}
+
+.login-card p {
+  color: var(--gray);
+  margin-bottom: 30px;
+  font-size: 14px;
+}
+
+.input-group {
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.input-group label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 500;
+  color: var(--primary);
+  font-size: 14px;
+}
+
+.input-group input, .input-group select {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  font-size: 16px;
+  transition: all 0.3s;
+}
+
+.input-group input:focus, .input-group select:focus {
+  outline: none;
+  border-color: var(--secondary);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.login-btn {
+  width: 100%;
+  padding: 14px;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.login-btn:hover {
+  background: var(--primary-light);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(15, 23, 42, 0.2);
+}
+
+.login-error {
+  color: var(--danger);
+  font-size: 14px;
+  margin-top: 10px;
+  display: none;
+}
+
+.ip-warning {
+  color: var(--danger);
+  font-size: 14px;
+  margin-top: 20px;
+  padding: 10px;
+  background: #fef2f2;
+  border-radius: 8px;
+  border: 1px solid #fecaca;
+}
+
+/* DASHBOARD */
+.dashboard-container {
+  display: none;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* MOBILE MENU TOGGLE */
+.mobile-menu-toggle {
+  display: none;
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 1001;
+  background: var(--primary);
+  color: white;
+  border: none;
+  width: 50px;
+  height: 50px;
+  border-radius: 8px;
+  font-size: 20px;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+}
+
+/* SIDEBAR */
+.sidebar {
+  width: 280px;
+  background: var(--primary);
+  color: white;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  flex-shrink: 0;
+  transition: transform 0.3s ease;
+  z-index: 1000;
+}
+
+.sidebar-header {
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.sidebar-header h2 {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 22px;
+  margin-bottom: 8px;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 15px;
+  padding: 10px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 8px;
+}
+
+.user-avatar {
+  width: 36px;
+  height: 36px;
+  background: var(--secondary);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+}
+
+.sidebar-nav {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.sidebar-menu {
+  list-style: none;
+  margin-bottom: 20px;
+}
+
+.sidebar-menu li {
+  padding: 14px 16px;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: all 0.3s;
+  cursor: pointer;
+  background: var(--primary-light);
+}
+
+.sidebar-menu li:hover {
+  background: rgba(255,255,255,0.1);
+  transform: translateX(5px);
+}
+
+.sidebar-menu li.active {
+  background: var(--secondary);
+}
+
+.sidebar-menu li i {
+  width: 20px;
+  text-align: center;
+}
+
+.sidebar-menu li .badge {
+  margin-left: auto;
+  background: var(--danger);
+  color: white;
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 10px;
+  font-weight: 600;
+}
+
+.search-container {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.search-container i {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--gray);
+}
+
+.search-container input {
+  width: 100%;
+  padding: 12px 12px 12px 40px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px;
+  color: white;
+  font-size: 14px;
+}
+
+.search-container input::placeholder {
+  color: rgba(255,255,255,0.5);
+}
+
+.products-section {
+  display: none;
+  flex-direction: column;
+  height: 100%;
+}
+
+.products-section.active {
+  display: flex;
+}
+
+.products-section h3 {
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 0 0 15px;
+  color: rgba(255,255,255,0.6);
+}
+
+.product-list {
+  list-style: none;
+  flex: 1;
+  overflow-y: auto;
+  margin-bottom: 20px;
+}
+
+.product-list li {
+  padding: 14px 16px;
+  background: var(--primary-light);
+  border-radius: 8px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: all 0.3s;
+  cursor: pointer;
+}
+
+.product-list li:hover {
+  background: rgba(255,255,255,0.1);
+  transform: translateX(5px);
+}
+
+.product-list li i {
+  color: var(--secondary);
+}
+
+.product-actions {
+  display: flex;
+  gap: 8px;
+  margin-left: auto;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.product-list li:hover .product-actions {
+  opacity: 1;
+}
+
+.product-actions button {
+  background: rgba(255,255,255,0.1);
+  border: none;
+  color: white;
+  width: 30px;
+  height: 30px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.product-actions button:hover {
+  background: var(--secondary);
+  transform: scale(1.1);
+}
+
+.product-actions .edit-btn:hover {
+  background: var(--success);
+}
+
+/* MAIN CONTENT */
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: #f1f5f9;
+}
+
+.header {
+  background: white;
+  padding: 20px 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  z-index: 10;
+}
+
+.header h1 {
+  font-size: 24px;
+  color: var(--primary);
+}
+
+.header-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.logout-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  background: var(--danger);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.logout-btn:hover {
+  background: #dc2626;
+  transform: translateY(-2px);
+}
+
+.add-product-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  background: var(--success);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.add-product-btn:hover {
+  background: #0da271;
+  transform: translateY(-2px);
+}
+
+/* STATS CARDS */
+.stats-container {
+  padding: 30px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px;
+}
+
+.stat-card {
+  background: white;
+  padding: 24px;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  transition: all 0.3s;
+}
+
+.stat-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+}
+
+.stat-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+}
+
+.stat-icon.blue { background: #dbeafe; color: var(--secondary); }
+.stat-icon.green { background: #d1fae5; color: var(--success); }
+.stat-icon.orange { background: #fef3c7; color: var(--warning); }
+.stat-icon.purple { background: #e9d5ff; color: #8b5cf6; }
+
+.stat-content h3 {
+  font-size: 14px;
+  color: var(--gray);
+  margin-bottom: 5px;
+}
+
+.stat-content p {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+/* CONTENT AREA */
+.content-area {
+  padding: 0 30px 30px;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.content-section {
+  display: none;
+  animation: fadeIn 0.5s ease;
+}
+
+.content-section.active {
+  display: block;
+}
+
+.section {
+  background: white;
+  border-radius: var(--radius);
+  padding: 25px;
+  margin-bottom: 25px;
+  box-shadow: var(--shadow);
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.section-header h2 {
+  font-size: 20px;
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.section-header h2 i {
+  color: var(--secondary);
+}
+
+/* SALES FORM */
+.sales-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: flex-end;
+}
+
+.form-group {
+  flex: 1;
+  min-width: 200px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 500;
+  color: var(--primary);
+  font-size: 14px;
+}
+
+.form-group select, .form-group input, .form-group textarea {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  font-size: 16px;
+}
+
+.form-group textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+  outline: none;
+  border-color: var(--secondary);
+}
+
+.sell-btn {
+  padding: 12px 28px;
+  background: var(--success);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s;
+  height: 46px;
+}
+
+.sell-btn:hover {
+  background: #0da271;
+  transform: translateY(-2px);
+}
+
+/* TABLE */
+.table-container {
+  overflow-x: auto;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 600px;
+}
+
+thead {
+  background: var(--light);
+}
+
+th {
+  padding: 16px;
+  text-align: left;
+  font-weight: 600;
+  color: var(--primary);
+  border-bottom: 2px solid var(--border);
+}
+
+td {
+  padding: 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+tr:hover {
+  background: #f8fafc;
+}
+
+.stock-low {
+  color: var(--danger);
+  font-weight: 600;
+}
+
+.stock-ok {
+  color: var(--success);
+  font-weight: 600;
+}
+
+.profit-high {
+  color: var(--success);
+  font-weight: 600;
+  background: #d1fae5;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.profit-medium {
+  color: var(--warning);
+  font-weight: 600;
+  background: #fef3c7;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.profit-low {
+  color: var(--danger);
+  font-weight: 600;
+  background: #fee2e2;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.action-btn {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.add-stock-btn {
+  background: var(--success);
+  color: white;
+}
+
+.add-stock-btn:hover {
+  background: #0da271;
+}
+
+.edit-price-btn {
+  background: var(--secondary);
+  color: white;
+  margin-left: 5px;
+}
+
+.edit-price-btn:hover {
+  background: #2563eb;
+}
+
+.price-change {
+  font-size: 12px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-left: 8px;
+}
+
+.price-up {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.price-down {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.sale-expired {
+  background: #fef2f2 !important;
+  color: #dc2626 !important;
+  text-decoration: line-through;
+}
+
+/* MODAL */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  padding: 20px;
+}
+
+.modal {
+  background: white;
+  border-radius: var(--radius);
+  width: 100%;
+  max-width: 500px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+  animation: modalFadeIn 0.3s ease;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.modal-header {
+  padding: 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  background: white;
+  z-index: 1;
+}
+
+.modal-header h3 {
+  font-size: 18px;
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: var(--gray);
+  cursor: pointer;
+  width: 30px;
+  height: 30px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-close:hover {
+  background: var(--light);
+}
+
+.modal-body {
+  padding: 20px;
+}
+
+.modal-footer {
+  padding: 20px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  position: sticky;
+  bottom: 0;
+  background: white;
+}
+
+.btn-primary {
+  padding: 10px 20px;
+  background: var(--secondary);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.btn-primary:hover {
+  background: #2563eb;
+}
+
+.btn-secondary {
+  padding: 10px 20px;
+  background: var(--light);
+  color: var(--primary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.btn-secondary:hover {
+  background: #e5e7eb;
+}
+
+.btn-danger {
+  padding: 10px 20px;
+  background: var(--danger);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.btn-danger:hover {
+  background: #dc2626;
+}
+
+.price-info {
+  background: #f8fafc;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 20px;
+}
+
+.price-info p {
+  margin: 5px 0;
+  font-size: 14px;
+}
+
+.price-old {
+  text-decoration: line-through;
+  color: var(--danger);
+  font-weight: 600;
+}
+
+.price-new {
+  color: var(--success);
+  font-weight: 600;
+}
+
+.price-diff {
+  font-weight: 600;
+}
+
+.form-row {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.form-row .form-group {
+  flex: 1;
+}
+
+/* CHART */
+.chart-container {
+  height: 300px;
+  position: relative;
+}
+
+/* IP LIST */
+.ip-list {
+  list-style: none;
+  margin-top: 15px;
+}
+
+.ip-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  background: #f8fafc;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  border: 1px solid var(--border);
+}
+
+.ip-list li .ip-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.ip-tag {
+  background: var(--secondary);
+  color: white;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* DROPDOWN STYLES */
+.dropdown-menu {
+  animation: fadeIn 0.2s ease;
+}
+
+.dropdown-item {
+  display: block;
+  width: 100%;
+  padding: 10px 15px;
+  text-align: left;
+  background: none;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+
+.dropdown-item:hover {
+  background: var(--light);
+}
+
+.btn-warning {
+  background: #f59e0b;
+  color: white;
+}
+
+.btn-warning:hover {
+  background: #d97706;
+}
+
+/* ANIMATIONS */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(-20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+/* RESPONSIVE */
+@media (max-width: 1024px) {
+  .dashboard-container {
+    flex-direction: column;
+  }
+  
+  .sidebar {
+    position: fixed;
+    left: -280px;
+    top: 0;
+    bottom: 0;
+    width: 280px;
+    z-index: 1000;
+  }
+  
+  .sidebar.active {
+    left: 0;
+  }
+  
+  .mobile-menu-toggle {
+    display: flex;
+  }
+  
+  .main-content {
+    margin-left: 0;
+    width: 100%;
+  }
+  
+  .overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 999;
+  }
+  
+  .overlay.active {
+    display: block;
+  }
+}
+
+@media (max-width: 768px) {
+  .header {
+    padding: 15px 20px;
+    flex-direction: column;
+    gap: 15px;
+    align-items: flex-start;
+  }
+  
+  .header-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  .content-area {
+    padding: 0 15px 15px;
+  }
+  
+  .stats-container {
+    padding: 15px;
+    grid-template-columns: 1fr;
+  }
+  
+  .sales-form {
+    flex-direction: column;
+  }
+  
+  .form-group {
+    width: 100%;
+  }
+  
+  .section-header {
+    flex-direction: column;
+    gap: 15px;
+    align-items: flex-start;
+  }
+  
+  .form-row {
+    flex-direction: column;
+    gap: 0;
+  }
+  
+  table {
+    min-width: 100%;
+  }
+  
+  th, td {
+    padding: 12px 8px;
+    font-size: 14px;
+  }
+  
+  .modal {
+    max-width: 95%;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- LOGIN PAGE -->
+<div id="loginBox" class="login-container">
+  <div class="login-card">
+    <h2>Dashboard Grosir</h2>
+    <p>Masukkan kredensial Anda untuk melanjutkan</p>
+    
+    <div class="input-group">
+      <label for="user">Username</label>
+      <input id="user" placeholder="Masukkan username" autocomplete="username">
+    </div>
+    
+    <div class="input-group">
+      <label for="pass">Password</label>
+      <input id="pass" type="password" placeholder="Masukkan password" autocomplete="current-password">
+    </div>
+    
+    <button class="login-btn" onclick="login()">
+      <i class="fas fa-sign-in-alt"></i> Login
+    </button>
+    
+    <div id="loginError" class="login-error">
+      <i class="fas fa-exclamation-circle"></i> Username atau password salah
+    </div>
+    
+    <div id="ipWarning" class="ip-warning" style="display: none;">
+      <i class="fas fa-shield-alt"></i> Akses hanya dari IP yang diizinkan
+    </div>
+    
+    <div style="margin-top: 20px; font-size: 12px; color: var(--gray);">
+      <p>Demo users:</p>
+      <p>• admin / admin123 (Admin)</p>
+      <p>• manager / manager123 (Manager)</p>
+      <p>• kasir1 / kasir123 (Kasir)</p>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL TAMBAH STOK -->
+<div id="addStockModal" class="modal-overlay">
+  <div class="modal">
+    <div class="modal-header">
+      <h3><i class="fas fa-boxes-stacked"></i> Restock dari Supplier</h3>
+      <button class="modal-close" onclick="closeModal('addStockModal')">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="input-group">
+        <label for="stockProductName">Nama Produk</label>
+        <input id="stockProductName" type="text" readonly>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="currentStock">Stok Saat Ini</label>
+          <input id="currentStock" type="number" readonly>
+        </div>
+        <div class="form-group">
+          <label for="currentModal">Harga Modal Saat Ini</label>
+          <input id="currentModal" type="number" readonly>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="addStockQty">Jumlah Restock</label>
+          <input id="addStockQty" type="number" placeholder="Jumlah restock" min="1" value="10">
+        </div>
+        <div class="form-group">
+          <label for="newModalPrice">Harga Modal Baru</label>
+          <input id="newModalPrice" type="number" placeholder="Harga modal dari supplier" min="100">
+        </div>
+      </div>
+      <div class="input-group">
+        <label for="supplierName">Nama Supplier</label>
+        <input id="supplierName" type="text" placeholder="Nama supplier">
+      </div>
+      <input type="hidden" id="stockProductIndex">
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeModal('addStockModal')">Batal</button>
+      <button class="btn-primary" onclick="addStock()">Restock Produk</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL TAMBAH PRODUK -->
+<div id="addProductModal" class="modal-overlay">
+  <div class="modal">
+    <div class="modal-header">
+      <h3><i class="fas fa-box-circle-check"></i> Tambah Produk Baru</h3>
+      <button class="modal-close" onclick="closeModal('addProductModal')">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="input-group">
+        <label for="newProductName">Nama Produk</label>
+        <input id="newProductName" type="text" placeholder="Contoh: Beras Premium 5kg">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="newProductModal">Harga Modal (Rp)</label>
+          <input id="newProductModal" type="number" placeholder="Harga beli dari supplier" min="100">
+        </div>
+        <div class="form-group">
+          <label for="newProductPrice">Harga Jual (Rp)</label>
+          <input id="newProductPrice" type="number" placeholder="Harga jual ke customer" min="100">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="newProductStock">Stok Awal</label>
+          <input id="newProductStock" type="number" placeholder="Stok awal" min="0" value="0">
+        </div>
+        <div class="form-group">
+          <label for="newProductSupplier">Supplier</label>
+          <input id="newProductSupplier" type="text" placeholder="Nama supplier">
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeModal('addProductModal')">Batal</button>
+      <button class="btn-primary" onclick="saveNewProduct()">Simpan Produk</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL EDIT HARGA -->
+<div id="editPriceModal" class="modal-overlay">
+  <div class="modal">
+    <div class="modal-header">
+      <h3><i class="fas fa-money-bill-wave"></i> Edit Harga Produk</h3>
+      <button class="modal-close" onclick="closeModal('editPriceModal')">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="price-info">
+        <p>Produk: <strong id="editProductName"></strong></p>
+        <p>Harga Modal: <span id="currentModalPriceText">Rp 0</span></p>
+        <p>Harga Jual Lama: <span class="price-old" id="oldPriceText">Rp 0</span></p>
+        <p>Perubahan: <span class="price-diff" id="priceDiffText">0% (Rp 0)</span></p>
+      </div>
+      <div class="input-group">
+        <label for="newProductPriceInput">Harga Jual Baru (Rp)</label>
+        <input id="newProductPriceInput" type="number" placeholder="Masukkan harga jual baru" min="100">
+      </div>
+      <div class="input-group">
+        <label for="priceChangeReason">Alasan Perubahan (Opsional)</label>
+        <input id="priceChangeReason" type="text" placeholder="Contoh: Kenaikan harga supplier, diskon, dll.">
+      </div>
+      <input type="hidden" id="editProductIndex">
+      <input type="hidden" id="oldPriceValue">
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeModal('editPriceModal')">Batal</button>
+      <button class="btn-primary" onclick="savePriceChange()">Simpan Perubahan</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL EDIT HARGA MODAL -->
+<div id="editModalPriceModal" class="modal-overlay">
+  <div class="modal">
+    <div class="modal-header">
+      <h3><i class="fas fa-money-bill"></i> Edit Harga Modal</h3>
+      <button class="modal-close" onclick="closeModal('editModalPriceModal')">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="price-info">
+        <p>Produk: <strong id="editModalProductName"></strong></p>
+        <p>Harga Modal Lama: <span class="price-old" id="oldModalPriceText">Rp 0</span></p>
+        <p>Perubahan: <span class="price-diff" id="modalPriceDiffText">0% (Rp 0)</span></p>
+      </div>
+      <div class="input-group">
+        <label for="newModalPriceInput">Harga Modal Baru (Rp)</label>
+        <input id="newModalPriceInput" type="number" placeholder="Masukkan harga modal baru" min="100">
+      </div>
+      <div class="input-group">
+        <label for="modalPriceChangeReason">Alasan Perubahan</label>
+        <input id="modalPriceChangeReason" type="text" placeholder="Contoh: Harga supplier naik/turun">
+      </div>
+      <input type="hidden" id="editModalProductIndex">
+      <input type="hidden" id="oldModalPriceValue">
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeModal('editModalPriceModal')">Batal</button>
+      <button class="btn-primary" onclick="saveModalPriceChange()">Simpan Perubahan</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL EDIT STOK -->
+<div id="editStockModal" class="modal-overlay">
+  <div class="modal">
+    <div class="modal-header">
+      <h3><i class="fas fa-edit"></i> Edit Stok Manual</h3>
+      <button class="modal-close" onclick="closeModal('editStockModal')">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="price-info">
+        <p>Produk: <strong id="editStockProductName"></strong></p>
+        <p>Stok Saat Ini: <span id="currentStockValue" style="font-weight: 600; color: var(--secondary);">0</span></p>
+      </div>
+      <div class="input-group">
+        <label for="newStockValue">Stok Baru</label>
+        <input id="newStockValue" type="number" placeholder="Masukkan jumlah stok baru" min="0">
+      </div>
+      <div class="input-group">
+        <label for="stockEditReason">Alasan Perubahan</label>
+        <input id="stockEditReason" type="text" placeholder="Contoh: Koreksi stok, stok opname, dll." required>
+      </div>
+      <input type="hidden" id="editStockProductIndex">
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeModal('editStockModal')">Batal</button>
+      <button class="btn-primary" onclick="saveStockEdit()">Simpan Perubahan</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL RIWAYAT STOK -->
+<div id="stockHistoryModal" class="modal-overlay">
+  <div class="modal" style="max-width: 900px;">
+    <div class="modal-header">
+      <h3><i class="fas fa-history"></i> <span id="stockHistoryTitle">Riwayat Stok</span></h3>
+      <button class="modal-close" onclick="closeModal('stockHistoryModal')">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Tanggal</th>
+              <th>Produk</th>
+              <th>Tipe</th>
+              <th>Perubahan</th>
+              <th>Stok Lama</th>
+              <th>Stok Baru</th>
+              <th>Alasan</th>
+              <th>Oleh</th>
+              <th>Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="stockHistoryBody"></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeModal('stockHistoryModal')">Tutup</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL FILTER KUSTOM -->
+<div id="customFilterModal" class="modal-overlay">
+  <div class="modal">
+    <div class="modal-header">
+      <h3><i class="fas fa-calendar-alt"></i> Filter Rentang Tanggal</h3>
+      <button class="modal-close" onclick="closeModal('customFilterModal')">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="filterStartDate">Tanggal Mulai</label>
+          <input id="filterStartDate" type="date">
+        </div>
+        <div class="form-group">
+          <label for="filterEndDate">Tanggal Akhir</label>
+          <input id="filterEndDate" type="date">
+        </div>
+      </div>
+      <div style="margin-top: 15px; padding: 10px; background: #f8fafc; border-radius: 8px;">
+        <p style="font-size: 14px; color: var(--gray); margin: 0;">
+          <i class="fas fa-info-circle"></i> Data akan difilter berdasarkan tanggal transaksi
+        </p>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeModal('customFilterModal')">Batal</button>
+      <button class="btn-primary" onclick="applyCustomFilter()">Terapkan Filter</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL TAMBAH IP -->
+<div id="addIPModal" class="modal-overlay">
+  <div class="modal">
+    <div class="modal-header">
+      <h3><i class="fas fa-plus-circle"></i> Tambah IP ke Whitelist</h3>
+      <button class="modal-close" onclick="closeModal('addIPModal')">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="input-group">
+        <label for="ipAddress">IP Address</label>
+        <input id="ipAddress" type="text" placeholder="Contoh: 192.168.1.100">
+      </div>
+      <div class="input-group">
+        <label for="ipDescription">Deskripsi</label>
+        <input id="ipDescription" type="text" placeholder="Contoh: Komputer Kasir 1, HP Manager, dll.">
+      </div>
+      <div class="input-group">
+        <label for="ipStatus">Status</label>
+        <select id="ipStatus">
+          <option value="active">Aktif</option>
+          <option value="inactive">Nonaktif</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeModal('addIPModal')">Batal</button>
+      <button class="btn-primary" onclick="saveIP()">Simpan IP</button>
+    </div>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboard" class="dashboard-container">
+  
+  <!-- MOBILE MENU TOGGLE -->
+  <button id="mobileMenuToggle" class="mobile-menu-toggle">
+    <i class="fas fa-bars"></i>
+  </button>
+  
+  <!-- OVERLAY FOR MOBILE -->
+  <div id="overlay" class="overlay" onclick="toggleSidebar()"></div>
+  
+  <!-- SIDEBAR -->
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <h2><i class="fas fa-boxes"></i> GrosirKu</h2>
+      <p>Dashboard Manajemen</p>
+      <div id="userInfo" class="user-info">
+        <div class="user-avatar">A</div>
+        <div>
+          <div style="font-weight: 600;" id="userName">Admin</div>
+          <div style="font-size: 12px; opacity: 0.8;" id="userRole">Administrator</div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="sidebar-nav">
+      <ul id="sidebarMenu" class="sidebar-menu">
+        <li onclick="showContent('dashboard')" class="active">
+          <i class="fas fa-tachometer-alt"></i> Dashboard
+        </li>
+        <li onclick="showContent('products')">
+          <i class="fas fa-box-open"></i> Produk
+        </li>
+        <li onclick="showContent('profit')">
+          <i class="fas fa-chart-line"></i> Analisis Keuntungan
+        </li>
+        <li onclick="showContent('supplier')">
+          <i class="fas fa-truck"></i> Restock Supplier
+        </li>
+        <li onclick="showContent('salesHistory')">
+          <i class="fas fa-history"></i> History Penjualan
+          <span id="expiredBadge" class="badge" style="display: none;">0</span>
+        </li>
+        <li onclick="showContent('whitelist')">
+          <i class="fas fa-shield-alt"></i> Whitelist IP
+        </li>
+      </ul>
+      
+      <!-- PRODUCTS SECTION (HIDDEN BY DEFAULT) -->
+      <div id="productsSection" class="products-section">
+        <div class="search-container">
+          <i class="fas fa-search"></i>
+          <input id="productSearch" placeholder="Cari produk...">
+        </div>
+        <h3>Daftar Produk</h3>
+        <ul id="productList" class="product-list"></ul>
+      </div>
+    </div>
+    
+    <div style="margin-top: auto; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1);">
+      <div style="font-size: 12px; opacity: 0.7; text-align: center;">
+        © 2023 GrosirKu v2.0
+      </div>
+    </div>
+  </div>
+  
+  <!-- MAIN CONTENT -->
+  <div class="main-content">
+    <!-- HEADER -->
+    <div class="header">
+      <h1 id="pageTitle">Dashboard Penjualan</h1>
+      <div class="header-actions">
+        <button id="addProductBtn" class="add-product-btn" onclick="openAddProductModal()" style="display: none;">
+          <i class="fas fa-plus-circle"></i> Tambah Produk
+        </button>
+        <button class="logout-btn" onclick="logout()">
+          <i class="fas fa-sign-out-alt"></i> Logout
+        </button>
+      </div>
+    </div>
+    
+    <!-- DASHBOARD CONTENT -->
+    <div id="dashboardContent" class="content-area content-section active">
+      <!-- STATS -->
+      <div class="stats-container">
+        <div class="stat-card">
+          <div class="stat-icon blue">
+            <i class="fas fa-box-open"></i>
+          </div>
+          <div class="stat-content">
+            <h3>Total Produk</h3>
+            <p id="totalProduk">0</p>
+          </div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-icon green">
+            <i class="fas fa-cubes"></i>
+          </div>
+          <div class="stat-content">
+            <h3>Total Stok</h3>
+            <p id="totalStok">0</p>
+          </div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-icon orange">
+            <i class="fas fa-coins"></i>
+          </div>
+          <div class="stat-content">
+            <h3>Nilai Stok</h3>
+            <p id="totalNilai">Rp 0</p>
+          </div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-icon purple">
+            <i class="fas fa-chart-line"></i>
+            </div>
+          <div class="stat-content">
+            <h3>Total Keuntungan</h3>
+            <p id="totalProfit">Rp 0</p>
+          </div>
+        </div>
+      </div>
+      
+      <!-- SALES FORM -->
+      <div class="section" style="animation: fadeIn 0.5s 0.1s both;">
+        <div class="section-header">
+          <h2><i class="fas fa-cash-register"></i> Input Penjualan</h2>
+        </div>
+        <div class="sales-form">
+          <div class="form-group">
+            <label>Pilih Produk</label>
+            <select id="saleProduct"></select>
+          </div>
+          <div class="form-group">
+            <label>Jumlah (Qty)</label>
+            <input id="saleQty" type="number" placeholder="Masukkan jumlah" min="1">
+          </div>
+          <div class="form-group">
+            <label>&nbsp;</label>
+            <button class="sell-btn" onclick="sellProduct()">
+              <i class="fas fa-shopping-cart"></i> Proses Penjualan
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- CHART -->
+      <div class="section" style="animation: fadeIn 0.5s 0.2s both;">
+        <div class="section-header">
+          <h2><i class="fas fa-chart-bar"></i> Grafik Penjualan</h2>
+        </div>
+        <div class="chart-container">
+          <canvas id="chart"></canvas>
+        </div>
+      </div>
+    </div>
+    
+    <!-- PRODUCTS CONTENT -->
+    <div id="productsContent" class="content-area content-section">
+      <div class="section">
+        <div class="section-header">
+          <h2><i class="fas fa-list-alt"></i> Daftar Produk</h2>
+          <div style="display: flex; gap: 10px;">
+            <button class="btn-primary" onclick="showPriceHistory()">
+              <i class="fas fa-history"></i> Riwayat Harga
+            </button>
+            <button class="btn-primary" onclick="showModalPriceReport()" style="background: #8b5cf6;">
+              <i class="fas fa-file-invoice-dollar"></i> Laporan Modal
+            </button>
+          </div>
+        </div>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Nama Produk</th>
+                <th>Harga Modal</th>
+                <th>Harga Jual</th>
+                <th>Stok</th>
+                <th>Keuntungan/Unit</th>
+                <th id="actionHeader">Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    
+    <!-- PROFIT ANALYSIS CONTENT -->
+    <div id="profitContent" class="content-area content-section">
+      <div class="section">
+        <div class="section-header">
+          <h2><i class="fas fa-chart-line"></i> Analisis Keuntungan</h2>
+          <button class="btn-primary" onclick="exportProfitReport()">
+            <i class="fas fa-download"></i> Export Laporan
+          </button>
+        </div>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Nama Produk</th>
+                <th>Harga Modal</th>
+                <th>Harga Jual</th>
+                <th>Keuntungan/Unit</th>
+                <th>Margin (%)</th>
+                <th>Stok Tersedia</th>
+                <th>Potensi Keuntungan</th>
+                <th>Total Terjual</th>
+                <th>Keuntungan Real</th>
+              </tr>
+            </thead>
+            <tbody id="profitBody"></tbody>
+          </table>
+        </div>
+      </div>
+      
+      <!-- PROFIT SUMMARY -->
+      <div class="section">
+        <div class="section-header">
+          <h2><i class="fas fa-chart-pie"></i> Ringkasan Keuntungan</h2>
+        </div>
+        <div class="stats-container">
+          <div class="stat-card">
+            <div class="stat-icon green">
+              <i class="fas fa-money-bill-wave"></i>
+            </div>
+            <div class="stat-content">
+              <h3>Total Keuntungan Real</h3>
+              <p id="totalRealProfit">Rp 0</p>
+            </div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="stat-icon blue">
+              <i class="fas fa-piggy-bank"></i>
+            </div>
+            <div class="stat-content">
+              <h3>Potensi Keuntungan</h3>
+              <p id="totalPotentialProfit">Rp 0</p>
+            </div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="stat-icon orange">
+              <i class="fas fa-percentage"></i>
+            </div>
+            <div class="stat-content">
+              <h3>Rata-rata Margin</h3>
+              <p id="averageMargin">0%</p>
+            </div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="stat-icon purple">
+              <i class="fas fa-star"></i>
+            </div>
+            <div class="stat-content">
+              <h3>Produk Terlaris</h3>
+              <p id="bestSeller">-</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- SUPPLIER RESTOCK CONTENT -->
+    <div id="supplierContent" class="content-area content-section">
+      <div class="section">
+        <div class="section-header">
+          <h2><i class="fas fa-truck"></i> Restock dari Supplier</h2>
+        </div>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Tanggal</th>
+                <th>Produk</th>
+                <th>Supplier</th>
+                <th>Jumlah</th>
+                <th>Harga Modal</th>
+                <th>Total Biaya</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="supplierBody"></tbody>
+          </table>
+        </div>
+      </div>
+      
+      <!-- SUPPLIER STATS -->
+      <div class="section">
+        <div class="section-header">
+          <h2><i class="fas fa-chart-bar"></i> Statistik Supplier</h2>
+        </div>
+        <div class="stats-container">
+          <div class="stat-card">
+            <div class="stat-icon blue">
+              <i class="fas fa-truck-loading"></i>
+            </div>
+            <div class="stat-content">
+              <h3>Total Restock</h3>
+              <p id="totalRestock">0</p>
+            </div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="stat-icon green">
+              <i class="fas fa-money-bill"></i>
+            </div>
+            <div class="stat-content">
+              <h3>Total Pengeluaran</h3>
+              <p id="totalSpending">Rp 0</p>
+            </div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="stat-icon orange">
+              <i class="fas fa-users"></i>
+            </div>
+            <div class="stat-content">
+              <h3>Jumlah Supplier</h3>
+              <p id="totalSuppliers">0</p>
+            </div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="stat-icon purple">
+              <i class="fas fa-box"></i>
+            </div>
+            <div class="stat-content">
+              <h3>Produk Terbanyak</h3>
+              <p id="mostRestocked">-</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- SALES HISTORY CONTENT -->
+    <div id="salesHistoryContent" class="content-area content-section">
+      <div class="section">
+        <div class="section-header">
+          <h2><i class="fas fa-history"></i> History Penjualan</h2>
+          <div style="display: flex; gap: 10px; align-items: center;">
+            <div style="position: relative;">
+              <button class="btn-secondary" onclick="toggleFilterDropdown()" style="display: flex; align-items: center; gap: 8px;">
+                <i class="fas fa-filter"></i> Filter: <span id="salesFilterDisplay">Semua Data</span>
+                <i class="fas fa-chevron-down" style="font-size: 12px;"></i>
+              </button>
+              <div id="filterDropdown" class="dropdown-menu" style="display: none; position: absolute; top: 100%; left: 0; background: white; border: 1px solid var(--border); border-radius: 8px; padding: 10px; z-index: 1000; min-width: 200px; box-shadow: var(--shadow); margin-top: 5px;">
+                <button class="dropdown-item" onclick="setSalesFilter('all')">Semua Data</button>
+                <button class="dropdown-item" onclick="setSalesFilter('today')">Hari Ini</button>
+                <button class="dropdown-item" onclick="setSalesFilter('yesterday')">Kemarin</button>
+                <button class="dropdown-item" onclick="setSalesFilter('week')">7 Hari Terakhir</button>
+                <button class="dropdown-item" onclick="setSalesFilter('month')">30 Hari Terakhir</button>
+                <button class="dropdown-item" onclick="openCustomFilterModal()">Rentang Kustom</button>
+              </div>
+            </div>
+            <button class="btn-primary" onclick="exportFilteredSales()">
+              <i class="fas fa-download"></i> Export
+            </button>
+            <button class="btn-danger" onclick="clearExpiredSales()">
+              <i class="fas fa-trash-alt"></i> Hapus Expired
+            </button>
+          </div>
+        </div>
+        
+        <!-- Summary Stats -->
+        <div id="salesSummary"></div>
+        
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Tanggal</th>
+                <th>Produk</th>
+                <th>Jumlah</th>
+                <th>Harga Jual</th>
+                <th>Harga Modal</th>
+                <th>Keuntungan</th>
+                <th>Total</th>
+                <th>Kasir</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="salesHistoryBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    
+    <!-- WHITELIST IP CONTENT -->
+    <div id="whitelistContent" class="content-area content-section">
+      <div class="section">
+        <div class="section-header">
+          <h2><i class="fas fa-shield-alt"></i> Whitelist IP Management</h2>
+          <button class="btn-primary" onclick="openAddIPModal()">
+            <i class="fas fa-plus"></i> Tambah IP
+          </button>
+        </div>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>IP Address</th>
+                <th>Deskripsi</th>
+                <th>Tanggal Ditambahkan</th>
+                <th>Ditambahkan Oleh</th>
+                <th>Status</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="whitelistBody"></tbody>
+          </table>
+        </div>
+      </div>
+      
+      <!-- IP STATS -->
+      <div class="section">
+        <div class="section-header">
+          <h2><i class="fas fa-network-wired"></i> Informasi Jaringan</h2>
+        </div>
+        <div class="stats-container">
+          <div class="stat-card">
+            <div class="stat-icon blue">
+              <i class="fas fa-desktop"></i>
+            </div>
+            <div class="stat-content">
+              <h3>IP Anda</h3>
+              <p id="currentIP">Loading...</p>
+            </div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="stat-icon green">
+              <i class="fas fa-check-circle"></i>
+            </div>
+            <div class="stat-content">
+              <h3>IP Diizinkan</h3>
+              <p id="totalAllowedIPs">0</p>
+            </div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="stat-icon orange">
+              <i class="fas fa-ban"></i>
+            </div>
+            <div class="stat-content">
+              <h3>IP Diblokir</h3>
+              <p id="totalBlockedIPs">0</p>
+            </div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="stat-icon purple">
+              <i class="fas fa-user-shield"></i>
+            </div>
+            <div class="stat-content">
+              <h3>Status Akses</h3>
+              <p id="accessStatus">Checking...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ==================== STATE MANAGEMENT ====================
+let currentUser = null;
+let currentIP = "Loading...";
+let chart = null;
+let salesFilter = {
+  period: 'all',
+  startDate: null,
+  endDate: null
+};
+
+// ==================== DATA MANAGEMENT ====================
+const USERS = [
+  { username: "admin", password: "admin123", role: "admin", name: "Administrator" },
+  { username: "kasir1", password: "kasir123", role: "user", name: "Kasir 1" },
+  { username: "kasir2", password: "kasir123", role: "user", name: "Kasir 2" },
+  { username: "manager", password: "manager123", role: "manager", name: "Manager" }
+];
+
+// Initialize data from localStorage or set defaults
+function initializeData() {
+  return {
+    products: JSON.parse(localStorage.getItem("products")) || [
+      { id: 1, name: "Beras Premium 5kg", modalPrice: 55000, price: 65000, stock: 120, supplier: "Supplier A", profitPerUnit: 10000 },
+      { id: 2, name: "Minyak Goreng 2L", modalPrice: 28000, price: 32000, stock: 85, supplier: "Supplier B", profitPerUnit: 4000 },
+      { id: 3, name: "Gula Pasir 1kg", modalPrice: 12000, price: 14000, stock: 200, supplier: "Supplier C", profitPerUnit: 2000 },
+      { id: 4, name: "Tepung Terigu 1kg", modalPrice: 10000, price: 12000, stock: 150, supplier: "Supplier A", profitPerUnit: 2000 },
+      { id: 5, name: "Mie Instan 1 dus", modalPrice: 75000, price: 85000, stock: 45, supplier: "Supplier D", profitPerUnit: 10000 }
+    ],
+    sales: JSON.parse(localStorage.getItem("sales")) || [],
+    priceHistory: JSON.parse(localStorage.getItem("priceHistory")) || [],
+    supplierHistory: JSON.parse(localStorage.getItem("supplierHistory")) || [],
+    stockHistory: JSON.parse(localStorage.getItem("stockHistory")) || [],
+    whitelistIPs: JSON.parse(localStorage.getItem("whitelistIPs")) || [
+      { ip: "103.20.83.166", description: "Localhost", status: "active", addedBy: "System", addedAt: new Date().toISOString() }
+    ]
+  };
+}
+
+// Data store
+let data = initializeData();
+
+// Save data to localStorage
+function saveData(key, value) {
+  localStorage.setItem(key, JSON.stringify(value));
+  // Update data object
+  data[key] = value;
+}
+
+// ==================== UTILITY FUNCTIONS ====================
+const formatRupiah = (n) => 'Rp ' + n.toLocaleString('id-ID');
+
+function showError(message) {
+  const errorEl = document.getElementById('loginError');
+  errorEl.textContent = message;
+  errorEl.style.display = 'block';
+  setTimeout(() => errorEl.style.display = 'none', 3000);
+}
+
+function showNotification(message, type = 'info') {
+  const colors = {
+    info: '#3b82f6',
+    success: '#10b981',
+    warning: '#f59e0b',
+    error: '#ef4444'
+  };
+  
+  const notification = document.createElement('div');
+  notification.style.cssText = `
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 15px 20px;
+    background: ${colors[type] || colors.info};
+    color: white;
+    border-radius: 8px;
+    z-index: 3000;
+    font-weight: 500;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    animation: slideIn 0.3s ease;
+  `;
+  notification.textContent = message;
+  document.body.appendChild(notification);
+  
+  setTimeout(() => {
+    notification.style.animation = 'slideIn 0.3s ease reverse';
+    setTimeout(() => document.body.removeChild(notification), 300);
+  }, 3000);
+}
+
+// ==================== AUTHENTICATION ====================
+async function checkAuth() {
+  const savedUser = localStorage.getItem("loginUser");
+  
+  if (savedUser) {
+    currentUser = JSON.parse(savedUser);
+    
+    // Get current IP
+    await getCurrentIP();
+    
+    // Check IP access
+    if (checkIPAccess()) {
+      showDashboard();
+    } else {
+      document.getElementById('ipWarning').style.display = 'block';
+      showError('Akses ditolak dari IP ini');
+      localStorage.removeItem("loginUser");
+      currentUser = null;
+    }
+  }
+}
+
+async function getCurrentIP() {
+  try {
+    const response = await fetch('https://api.ipify.org?format=json');
+    const result = await response.json();
+    currentIP = result.ip;
+    document.getElementById('currentIP').textContent = currentIP;
+  } catch (error) {
+    console.error("Error getting IP:", error);
+    currentIP = "Unknown";
+    document.getElementById('currentIP').textContent = "Tidak dapat mendeteksi IP";
+  }
+}
+
+function checkIPAccess() {
+  const activeIPs = data.whitelistIPs.filter(ip => ip.status === 'active');
+  const isAllowed = activeIPs.some(ip => ip.ip === currentIP);
+  
+  const accessStatus = document.getElementById('accessStatus');
+  accessStatus.textContent = isAllowed ? "Diizinkan" : "Diblokir";
+  accessStatus.style.color = isAllowed ? "#10b981" : "#ef4444";
+  
+  document.getElementById('totalAllowedIPs').textContent = activeIPs.length;
+  document.getElementById('totalBlockedIPs').textContent = data.whitelistIPs.filter(ip => ip.status === 'inactive').length;
+  
+  return isAllowed;
+}
+
+function login() {
+  const username = document.getElementById('user').value.trim();
+  const password = document.getElementById('pass').value.trim();
+  
+  if (!username || !password) {
+    showError('Username dan password harus diisi');
+    return;
+  }
+  
+  const found = USERS.find(u => u.username === username && u.password === password);
+  
+  if (found) {
+    currentUser = found;
+    getCurrentIP().then(() => {
+      if (checkIPAccess()) {
+        localStorage.setItem("loginUser", JSON.stringify(found));
+        showDashboard();
+      } else {
+        document.getElementById('ipWarning').style.display = 'block';
+        showError('Akses ditolak dari IP ini');
+      }
+    });
+  } else {
+    showError('Username atau password salah');
+  }
+}
+
+function logout() {
+  if (confirm('Apakah Anda yakin ingin logout?')) {
+    localStorage.removeItem("loginUser");
+    currentUser = null;
+    location.reload();
+  }
+}
+
+// ==================== ROLE CHECK FUNCTIONS ====================
+function isManager() {
+  return currentUser && currentUser.role === 'manager';
+}
+
+function isAdmin() {
+  return currentUser && currentUser.role === 'admin';
+}
+
+function canEditProducts() {
+  return isManager() || isAdmin();
+}
+
+// ==================== MODAL FUNCTIONS ====================
+function openModal(modalId) {
+  document.getElementById(modalId).style.display = 'flex';
+}
+
+function closeModal(modalId) {
+  document.getElementById(modalId).style.display = 'none';
+}
+
+function openAddStockModal(index) {
+  if (!canEditProducts()) {
+    alert("Hanya Manager atau Admin yang dapat melakukan restock!");
+    return;
+  }
+  
+  const product = data.products[index];
+  document.getElementById('stockProductName').value = product.name;
+  document.getElementById('currentStock').value = product.stock;
+  document.getElementById('currentModal').value = product.modalPrice;
+  document.getElementById('stockProductIndex').value = index;
+  document.getElementById('addStockQty').value = 10;
+  document.getElementById('newModalPrice').value = product.modalPrice;
+  document.getElementById('supplierName').value = product.supplier || '';
+  openModal('addStockModal');
+}
+
+function openEditModalPriceModal(index) {
+  if (!canEditProducts()) {
+    alert("Hanya Manager atau Admin yang dapat mengedit harga modal!");
+    return;
+  }
+  
+  const product = data.products[index];
+  document.getElementById('editModalProductName').textContent = product.name;
+  document.getElementById('oldModalPriceText').textContent = formatRupiah(product.modalPrice);
+  document.getElementById('oldModalPriceValue').value = product.modalPrice;
+  document.getElementById('newModalPriceInput').value = product.modalPrice;
+  document.getElementById('editModalProductIndex').value = index;
+  document.getElementById('modalPriceChangeReason').value = '';
+  
+  updateModalPriceDiff();
+  openModal('editModalPriceModal');
+}
+
+function updateModalPriceDiff() {
+  const oldPrice = parseInt(document.getElementById('oldModalPriceValue').value);
+  const newPriceInput = document.getElementById('newModalPriceInput');
+  const newPrice = parseInt(newPriceInput.value) || oldPrice;
+  const diff = newPrice - oldPrice;
+  const diffPercent = oldPrice > 0 ? ((diff / oldPrice) * 100).toFixed(1) : 0;
+  
+  const priceDiffText = document.getElementById('modalPriceDiffText');
+  
+  if (diff > 0) {
+    priceDiffText.textContent = `+${diffPercent}% (+${formatRupiah(diff)})`;
+    priceDiffText.style.color = '#dc2626';
+  } else if (diff < 0) {
+    priceDiffText.textContent = `${diffPercent}% (${formatRupiah(diff)})`;
+    priceDiffText.style.color = '#059669';
+  } else {
+    priceDiffText.textContent = `0% (${formatRupiah(0)})`;
+    priceDiffText.style.color = '#6b7280';
+  }
+}
+
+function openAddProductModal() {
+  if (!canEditProducts()) {
+    alert("Hanya Manager atau Admin yang dapat menambah produk!");
+    return;
+  }
+  document.getElementById('newProductName').value = '';
+  document.getElementById('newProductModal').value = '';
+  document.getElementById('newProductPrice').value = '';
+  document.getElementById('newProductStock').value = 0;
+  document.getElementById('newProductSupplier').value = '';
+  openModal('addProductModal');
+}
+
+function openEditPriceModal(index) {
+  if (!canEditProducts()) {
+    alert("Hanya Manager atau Admin yang dapat mengedit harga!");
+    return;
+  }
+  
+  const product = data.products[index];
+  document.getElementById('editProductName').textContent = product.name;
+  document.getElementById('currentModalPriceText').textContent = formatRupiah(product.modalPrice);
+  document.getElementById('oldPriceText').textContent = formatRupiah(product.price);
+  document.getElementById('oldPriceValue').value = product.price;
+  document.getElementById('newProductPriceInput').value = product.price;
+  document.getElementById('editProductIndex').value = index;
+  document.getElementById('priceChangeReason').value = '';
+  
+  updatePriceDiff();
+  openModal('editPriceModal');
+}
+
+function updatePriceDiff() {
+  const oldPrice = parseInt(document.getElementById('oldPriceValue').value);
+  const newPriceInput = document.getElementById('newProductPriceInput');
+  const newPrice = parseInt(newPriceInput.value) || oldPrice;
+  const diff = newPrice - oldPrice;
+  const diffPercent = oldPrice > 0 ? ((diff / oldPrice) * 100).toFixed(1) : 0;
+  
+  const priceDiffText = document.getElementById('priceDiffText');
+  
+  if (diff > 0) {
+    priceDiffText.textContent = `+${diffPercent}% (+${formatRupiah(diff)})`;
+    priceDiffText.style.color = '#dc2626';
+  } else if (diff < 0) {
+    priceDiffText.textContent = `${diffPercent}% (${formatRupiah(diff)})`;
+    priceDiffText.style.color = '#059669';
+  } else {
+    priceDiffText.textContent = `0% (${formatRupiah(0)})`;
+    priceDiffText.style.color = '#6b7280';
+  }
+}
+
+// ==================== STOCK HISTORY MANAGEMENT ====================
+function addStockHistory(productId, productName, type, quantity, oldStock, newStock, reason, referenceId = null) {
+  const history = {
+    id: Date.now(),
+    productId: productId,
+    productName: productName,
+    type: type,
+    quantity: quantity,
+    oldStock: oldStock,
+    newStock: newStock,
+    reason: reason,
+    referenceId: referenceId,
+    changedBy: currentUser.name,
+    changedAt: new Date().toISOString()
+  };
+  
+  let stockHistory = JSON.parse(localStorage.getItem("stockHistory")) || [];
+  stockHistory.push(history);
+  saveData("stockHistory", stockHistory);
+  
+  return history;
+}
+
+function openEditStockModal(index) {
+  if (!canEditProducts()) {
+    alert("Hanya Manager atau Admin yang dapat mengedit stok!");
+    return;
+  }
+  
+  const product = data.products[index];
+  document.getElementById('editStockProductName').textContent = product.name;
+  document.getElementById('currentStockValue').textContent = product.stock;
+  document.getElementById('editStockProductIndex').value = index;
+  document.getElementById('newStockValue').value = product.stock;
+  document.getElementById('stockEditReason').value = '';
+  
+  openModal('editStockModal');
+}
+
+function saveStockEdit() {
+  if (!canEditProducts()) {
+    alert("Akses ditolak!");
+    return;
+  }
+  
+  const index = document.getElementById('editStockProductIndex').value;
+  const newStock = parseInt(document.getElementById('newStockValue').value);
+  const reason = document.getElementById('stockEditReason').value.trim();
+  
+  if (isNaN(newStock) || newStock < 0) {
+    alert("Stok harus berupa angka positif!");
+    return;
+  }
+  
+  if (!reason) {
+    alert("Alasan perubahan stok harus diisi!");
+    return;
+  }
+  
+  const product = data.products[index];
+  const oldStock = product.stock;
+  const quantityChange = newStock - oldStock;
+  
+  product.stock = newStock;
+  saveData("products", data.products);
+  
+  addStockHistory(
+    product.id,
+    product.name,
+    'correction',
+    quantityChange,
+    oldStock,
+    newStock,
+    reason
+  );
+  
+  closeModal('editStockModal');
+  renderProducts();
+  
+  const changeType = quantityChange > 0 ? "PENAMBAHAN" : "PENGURANGAN";
+  alert(`Stok berhasil diubah!\n\n` +
+        `Produk: ${product.name}\n` +
+        `Stok Lama: ${oldStock}\n` +
+        `Stok Baru: ${newStock}\n` +
+        `Perubahan: ${quantityChange > 0 ? '+' : ''}${quantityChange}\n` +
+        `Alasan: ${reason}`);
+}
+
+function undoStockChange(historyId) {
+  if (!canEditProducts()) {
+    alert("Hanya Manager atau Admin yang dapat membatalkan perubahan stok!");
+    return;
+  }
+  
+  if (!confirm("Apakah Anda yakin ingin membatalkan perubahan stok ini?\nStok akan dikembalikan ke keadaan sebelumnya.")) {
+    return;
+  }
+  
+  let stockHistory = JSON.parse(localStorage.getItem("stockHistory")) || [];
+  const historyIndex = stockHistory.findIndex(h => h.id === historyId);
+  
+  if (historyIndex === -1) {
+    alert("Data riwayat tidak ditemukan!");
+    return;
+  }
+  
+  const history = stockHistory[historyIndex];
+  const product = data.products.find(p => p.id === history.productId);
+  
+  if (!product) {
+    alert("Produk tidak ditemukan!");
+    return;
+  }
+  
+  const oldStock = product.stock;
+  product.stock = history.oldStock;
+  saveData("products", data.products);
+  
+  addStockHistory(
+    product.id,
+    product.name,
+    'undo',
+    history.oldStock - oldStock,
+    oldStock,
+    history.oldStock,
+    `Undo: ${history.reason}`,
+    history.id
+  );
+  
+  history.undone = true;
+  history.undoneAt = new Date().toISOString();
+  history.undoneBy = currentUser.name;
+  saveData("stockHistory", stockHistory);
+  
+  renderProducts();
+  
+  alert(`Perubahan stok berhasil dibatalkan!\n\n` +
+        `Produk: ${product.name}\n` +
+        `Stok dikembalikan dari ${oldStock} menjadi ${history.oldStock}`);
+}
+
+function renderStockHistory(productId = null) {
+  const stockHistoryBody = document.getElementById("stockHistoryBody");
+  if (!stockHistoryBody) return;
+  
+  stockHistoryBody.innerHTML = '';
+  
+  let stockHistory = JSON.parse(localStorage.getItem("stockHistory")) || [];
+  
+  if (productId) {
+    stockHistory = stockHistory.filter(h => h.productId === productId);
+  }
+  
+  stockHistory.sort((a, b) => new Date(b.changedAt) - new Date(a.changedAt));
+  
+  stockHistory.forEach(history => {
+    const date = new Date(history.changedAt);
+    const dateStr = date.toLocaleDateString('id-ID');
+    const timeStr = date.toLocaleTimeString('id-ID');
+    
+    const row = document.createElement('tr');
+    const quantityClass = history.quantity > 0 ? 'stock-ok' : 'stock-low';
+    const typeText = {
+      'restock': '📦 Restock',
+      'sale': '💰 Penjualan',
+      'correction': '✏️ Koreksi',
+      'undo': '↩️ Undo'
+    }[history.type] || history.type;
+    
+    row.innerHTML = `
+      <td>${dateStr} ${timeStr}</td>
+      <td>${history.productName}</td>
+      <td>${typeText}</td>
+      <td class="${quantityClass}">${history.quantity > 0 ? '+' : ''}${history.quantity}</td>
+      <td>${history.oldStock}</td>
+      <td>${history.newStock}</td>
+      <td>${history.reason}</td>
+      <td>${history.changedBy}</td>
+      <td>
+        ${history.undone ? 
+          `<span style="color: var(--gray);">Sudah di-undo</span>` : 
+          (history.type !== 'undo' ? 
+            `<button class="action-btn btn-warning" onclick="undoStockChange(${history.id})" title="Batalkan perubahan">
+              <i class="fas fa-undo"></i> Undo
+            </button>` : 
+            'Tidak tersedia')
+        }
+      </td>
+    `;
+    stockHistoryBody.appendChild(row);
+  });
+}
+
+function openStockHistoryModal(productId = null, productName = '') {
+  const modalTitle = document.getElementById('stockHistoryTitle');
+  if (productId) {
+    modalTitle.textContent = `Riwayat Stok: ${productName}`;
+    renderStockHistory(productId);
+  } else {
+    modalTitle.textContent = 'Riwayat Stok Semua Produk';
+    renderStockHistory();
+  }
+  openModal('stockHistoryModal');
+}
+
+// ==================== DASHBOARD FUNCTIONS ====================
+function showDashboard() {
+  document.getElementById('loginBox').style.display = 'none';
+  document.getElementById('dashboard').style.display = 'flex';
+  
+  if (currentUser) {
+    document.getElementById('userName').textContent = currentUser.name;
+    let roleText = '';
+    switch(currentUser.role) {
+      case 'admin': roleText = 'Administrator'; break;
+      case 'manager': roleText = 'Manager'; break;
+      case 'user': roleText = 'Kasir'; break;
+      default: roleText = 'User';
+    }
+    document.getElementById('userRole').textContent = roleText;
+    document.querySelector('.user-avatar').textContent = currentUser.name.charAt(0);
+    
+    document.getElementById('addProductBtn').style.display = canEditProducts() ? 'flex' : 'none';
+  }
+  
+  renderDashboard();
+  drawChart();
+  checkExpiredSales();
+}
+
+function renderDashboard() {
+  const saleProduct = document.getElementById("saleProduct");
+  saleProduct.innerHTML = '<option value="">Pilih produk...</option>';
+  
+  let totalStock = 0;
+  let totalValue = 0;
+  let totalProfit = 0;
+  
+  data.products.forEach((product, index) => {
+    const option = document.createElement('option');
+    option.value = index;
+    option.textContent = `${product.name} (Stok: ${product.stock}) - ${formatRupiah(product.price)}`;
+    saleProduct.appendChild(option);
+    
+    totalStock += product.stock;
+    totalValue += product.stock * product.modalPrice;
+    
+    const productSales = data.sales.filter(s => s.productId === product.id);
+    productSales.forEach(sale => {
+      totalProfit += (sale.price - product.modalPrice) * sale.qty;
+    });
+  });
+  
+  document.getElementById("totalProduk").textContent = data.products.length;
+  document.getElementById("totalStok").textContent = totalStock;
+  document.getElementById("totalNilai").textContent = formatRupiah(totalValue);
+  document.getElementById("totalProfit").textContent = formatRupiah(totalProfit);
+}
+
+// ==================== NAVIGATION ====================
+function showContent(section) {
+  if (window.innerWidth <= 1024) {
+    toggleSidebar();
+  }
+  
+  const menuItems = document.querySelectorAll('.sidebar-menu li');
+  menuItems.forEach(item => item.classList.remove('active'));
+  
+  const sectionMap = {
+    'dashboard': 0,
+    'products': 1,
+    'profit': 2,
+    'supplier': 3,
+    'salesHistory': 4,
+    'whitelist': 5
+  };
+  
+  if (sectionMap[section] !== undefined) {
+    menuItems[sectionMap[section]].classList.add('active');
+  }
+  
+  const titles = {
+    'dashboard': 'Dashboard Penjualan',
+    'products': 'Manajemen Produk',
+    'profit': 'Analisis Keuntungan',
+    'supplier': 'Restock Supplier',
+    'salesHistory': 'History Penjualan',
+    'whitelist': 'Whitelist IP'
+  };
+  
+  document.getElementById('pageTitle').textContent = titles[section] || 'Dashboard';
+  
+  if (section === 'products') {
+    document.getElementById('productsSection').classList.add('active');
+  } else {
+    document.getElementById('productsSection').classList.remove('active');
+  }
+  
+  const contentSections = document.querySelectorAll('.content-section');
+  contentSections.forEach(sec => {
+    sec.classList.remove('active');
+    sec.style.display = 'none';
+  });
+  
+  const selectedSection = document.getElementById(section + 'Content');
+  if (selectedSection) {
+    selectedSection.classList.add('active');
+    selectedSection.style.display = 'block';
+    
+    switch(section) {
+      case 'dashboard':
+        renderDashboard();
+        break;
+      case 'products':
+        renderProducts();
+        break;
+      case 'profit':
+        renderProfitAnalysis();
+        break;
+      case 'supplier':
+        renderSupplierHistory();
+        break;
+      case 'salesHistory':
+        renderSalesHistory();
+        break;
+      case 'whitelist':
+        renderWhitelist();
+        break;
+    }
+  }
+}
+
+// ==================== MOBILE MENU ====================
+function toggleSidebar() {
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('overlay');
+  sidebar.classList.toggle('active');
+  overlay.classList.toggle('active');
+}
+
+// ==================== PRODUCT MANAGEMENT ====================
+function renderProducts(filter = "") {
+  const productList = document.getElementById("productList");
+  const tableBody = document.getElementById("tableBody");
+  
+  productList.innerHTML = '';
+  tableBody.innerHTML = '';
+  
+  let filteredProducts = data.products;
+  
+  if (filter) {
+    filteredProducts = data.products.filter(p => 
+      p.name.toLowerCase().includes(filter.toLowerCase())
+    );
+  }
+  
+  const recentChanges = {};
+  data.priceHistory.slice(-20).reverse().forEach(entry => {
+    if (!recentChanges[entry.productId]) {
+      recentChanges[entry.productId] = entry;
+    }
+  });
+  
+  filteredProducts.forEach((product, index) => {
+    const profitPerUnit = product.profitPerUnit || (product.price - product.modalPrice);
+    
+    let profitClass = 'profit-medium';
+    if (profitPerUnit > 10000) profitClass = 'profit-high';
+    else if (profitPerUnit < 3000) profitClass = 'profit-low';
+    
+    const li = document.createElement('li');
+    li.innerHTML = `
+      <i class="fas fa-box"></i>
+      <div>
+        <div style="font-weight: 600;">${product.name}</div>
+        <div style="font-size: 12px; opacity: 0.8;">Stok: ${product.stock} | Profit: ${formatRupiah(profitPerUnit)}</div>
+      </div>
+      ${canEditProducts() ? `
+        <div class="product-actions">
+          <button class="edit-btn" onclick="event.stopPropagation(); openEditPriceModal(${index})" title="Edit Harga Jual">
+            <i class="fas fa-money-bill-wave"></i>
+          </button>
+          <button onclick="event.stopPropagation(); openEditModalPriceModal(${index})" title="Edit Harga Modal">
+            <i class="fas fa-money-bill"></i>
+          </button>
+          <button onclick="event.stopPropagation(); openAddStockModal(${index})" title="Restock">
+            <i class="fas fa-plus"></i>
+          </button>
+        </div>
+      ` : ''}
+    `;
+    li.onclick = () => selectProductForSale(index);
+    productList.appendChild(li);
+    
+    const row = document.createElement('tr');
+    const stockClass = product.stock < 10 ? 'stock-low' : 'stock-ok';
+    
+    const recentChange = recentChanges[product.id];
+    let priceChangeIndicator = '';
+    if (recentChange && Date.now() - new Date(recentChange.changedAt).getTime() < 7 * 24 * 60 * 60 * 1000) {
+      const changeType = recentChange.change > 0 ? 'price-up' : 'price-down';
+      const changeIcon = recentChange.change > 0 ? '▲' : '▼';
+      priceChangeIndicator = `<span class="price-change ${changeType}">${changeIcon} ${Math.abs(recentChange.percentChange)}%</span>`;
+    }
+    
+    row.innerHTML = `
+      <td>${product.name}</td>
+      <td>
+        ${formatRupiah(product.modalPrice)}
+        ${canEditProducts() ? `
+          <button class="action-btn edit-price-btn" style="margin-left: 5px; font-size: 12px; padding: 3px 8px;" 
+                  onclick="openEditModalPriceModal(${index})" title="Edit Harga Modal">
+            <i class="fas fa-edit"></i>
+          </button>
+        ` : ''}
+      </td>
+      <td>
+        ${formatRupiah(product.price)}
+        ${priceChangeIndicator}
+        ${canEditProducts() ? `
+          <button class="action-btn edit-price-btn" style="margin-left: 5px; font-size: 12px; padding: 3px 8px;" 
+                  onclick="openEditPriceModal(${index})" title="Edit Harga Jual">
+            <i class="fas fa-edit"></i>
+          </button>
+        ` : ''}
+      </td>
+      <td class="${stockClass}">${product.stock}</td>
+      <td class="${profitClass}">${formatRupiah(profitPerUnit)}</td>
+      <td class="table-actions">
+        ${canEditProducts() ? `
+          <button class="action-btn edit-price-btn" onclick="openEditPriceModal(${index})">
+            <i class="fas fa-edit"></i> Edit Jual
+          </button>
+          <button class="action-btn edit-price-btn" onclick="openEditModalPriceModal(${index})" style="background: #8b5cf6;">
+            <i class="fas fa-money-bill"></i> Edit Modal
+          </button>
+          <button class="action-btn edit-price-btn" onclick="openEditStockModal(${index})" style="background: #f59e0b;">
+            <i class="fas fa-edit"></i> Edit Stok
+          </button>
+          <button class="action-btn" onclick="openStockHistoryModal(${product.id}, '${product.name}')" style="background: #8b5cf6;">
+            <i class="fas fa-history"></i> Riwayat
+          </button>
+          <button class="action-btn add-stock-btn" onclick="openAddStockModal(${index})">
+            <i class="fas fa-plus"></i> Restock
+          </button>
+        ` : '<span style="color: var(--gray); font-size: 14px;">Hanya Manager</span>'}
+      </td>
+    `;
+    tableBody.appendChild(row);
+  });
+  
+  document.getElementById('actionHeader').style.display = canEditProducts() ? 'table-cell' : 'none';
+}
+
+function selectProductForSale(index) {
+  document.getElementById('saleProduct').value = index;
+  document.getElementById('saleQty').focus();
+}
+
+function saveNewProduct() {
+  if (!canEditProducts()) {
+    alert("Akses ditolak!");
+    return;
+  }
+  
+  const name = document.getElementById('newProductName').value.trim();
+  const modalPrice = parseInt(document.getElementById('newProductModal').value);
+  const price = parseInt(document.getElementById('newProductPrice').value);
+  const stock = parseInt(document.getElementById('newProductStock').value);
+  const supplier = document.getElementById('newProductSupplier').value.trim();
+  
+  if (!name) {
+    alert("Nama produk harus diisi!");
+    return;
+  }
+  
+  if (!modalPrice || modalPrice < 100) {
+    alert("Harga modal harus minimal Rp 100!");
+    return;
+  }
+  
+  if (!price || price < 100) {
+    alert("Harga jual harus minimal Rp 100!");
+    return;
+  }
+  
+  if (price <= modalPrice) {
+    alert("Harga jual harus lebih tinggi dari harga modal!");
+    return;
+  }
+  
+  if (stock < 0) {
+    alert("Stok tidak boleh negatif!");
+    return;
+  }
+  
+  if (!supplier) {
+    alert("Nama supplier harus diisi!");
+    return;
+  }
+  
+  const newId = data.products.length > 0 ? Math.max(...data.products.map(p => p.id)) + 1 : 1;
+  const profitPerUnit = price - modalPrice;
+  
+  const newProduct = {
+    id: newId,
+    name: name,
+    modalPrice: modalPrice,
+    price: price,
+    stock: stock,
+    supplier: supplier,
+    profitPerUnit: profitPerUnit
+  };
+  
+  data.products.push(newProduct);
+  saveData("products", data.products);
+  
+  if (stock > 0) {
+    const supplierEntry = {
+      productId: newId,
+      productName: name,
+      supplier: supplier,
+      quantity: stock,
+      modalPrice: modalPrice,
+      totalCost: stock * modalPrice,
+      date: new Date().toISOString(),
+      addedBy: currentUser.name
+    };
+    
+    data.supplierHistory.push(supplierEntry);
+    saveData("supplierHistory", data.supplierHistory);
+  }
+  
+  const historyEntry = {
+    productId: newId,
+    productName: name,
+    type: 'new',
+    oldPrice: 0,
+    newPrice: price,
+    change: price,
+    percentChange: 100,
+    reason: 'Produk baru',
+    changedBy: currentUser.name,
+    changedAt: new Date().toISOString()
+  };
+  
+  data.priceHistory.push(historyEntry);
+  saveData("priceHistory", data.priceHistory);
+  
+  closeModal('addProductModal');
+  renderProducts();
+  renderSupplierHistory();
+  
+  alert(`Produk berhasil ditambahkan!\n${name}\n` +
+        `Supplier: ${supplier}\n` +
+        `Harga Modal: ${formatRupiah(modalPrice)}\n` +
+        `Harga Jual: ${formatRupiah(price)}\n` +
+        `Keuntungan/Unit: ${formatRupiah(profitPerUnit)}\n` +
+        `Margin: ${((profitPerUnit / modalPrice) * 100).toFixed(1)}%\n` +
+        `Stok awal: ${stock}`);
+}
+
+// ==================== SALES FUNCTIONS ====================
+function sellProduct() {
+  const productIndex = document.getElementById("saleProduct").value;
+  const qtyInput = document.getElementById("saleQty");
+  const qty = parseInt(qtyInput.value);
+  
+  if (!productIndex) {
+    alert("Pilih produk terlebih dahulu!");
+    return;
+  }
+  
+  if (!qty || qty <= 0) {
+    alert("Masukkan jumlah yang valid!");
+    return;
+  }
+  
+  const product = data.products[productIndex];
+  
+  if (product.stock < qty) {
+    alert(`Stok tidak mencukupi! Stok tersedia: ${product.stock}`);
+    return;
+  }
+  
+  const oldStock = product.stock;
+  product.stock -= qty;
+  
+  const sale = {
+    productId: product.id,
+    name: product.name,
+    qty: qty,
+    price: product.price,
+    total: qty * product.price,
+    date: new Date().toISOString(),
+    seller: currentUser.name
+  };
+  
+  data.sales.push(sale);
+  saveData("sales", data.sales);
+  saveData("products", data.products);
+  
+  addStockHistory(
+    product.id,
+    product.name,
+    'sale',
+    -qty,
+    oldStock,
+    product.stock,
+    `Penjualan oleh ${currentUser.name}`
+  );
+  
+  const profit = (product.price - product.modalPrice) * qty;
+  
+  alert(`Penjualan berhasil!\n${product.name} x${qty}\n` +
+        `Harga: ${formatRupiah(product.price)}\n` +
+        `Keuntungan: ${formatRupiah(profit)}\n` +
+        `Total: ${formatRupiah(sale.total)}`);
+  
+  qtyInput.value = '';
+  renderDashboard();
+  drawChart();
+  checkExpiredSales();
+}
+
+// ==================== PRICE MANAGEMENT ====================
+function savePriceChange() {
+  if (!canEditProducts()) {
+    alert("Akses ditolak!");
+    return;
+  }
+  
+  const index = document.getElementById('editProductIndex').value;
+  const newPriceInput = document.getElementById('newProductPriceInput');
+  const newPrice = parseInt(newPriceInput.value);
+  const reason = document.getElementById('priceChangeReason').value.trim();
+  
+  if (!newPrice || newPrice < 100) {
+    alert("Harga harus minimal Rp 100!");
+    return;
+  }
+  
+  const product = data.products[index];
+  const oldPrice = product.price;
+  
+  if (newPrice === oldPrice) {
+    alert("Harga baru sama dengan harga lama. Tidak ada perubahan.");
+    closeModal('editPriceModal');
+    return;
+  }
+  
+  product.profitPerUnit = newPrice - product.modalPrice;
+  
+  const historyEntry = {
+    productId: product.id,
+    productName: product.name,
+    oldPrice: oldPrice,
+    newPrice: newPrice,
+    change: newPrice - oldPrice,
+    percentChange: ((newPrice - oldPrice) / oldPrice * 100).toFixed(1),
+    reason: reason || 'Tidak ada alasan',
+    changedBy: currentUser.name,
+    changedAt: new Date().toISOString()
+  };
+  
+  data.priceHistory.push(historyEntry);
+  saveData("priceHistory", data.priceHistory);
+  
+  product.price = newPrice;
+  saveData("products", data.products);
+  
+  closeModal('editPriceModal');
+  renderProducts();
+  
+  const changeType = newPrice > oldPrice ? "KENAIKAN" : "PENURUNAN";
+  const diff = Math.abs(newPrice - oldPrice);
+  alert(`${changeType} HARGA BERHASIL!\n\n` +
+        `Produk: ${product.name}\n` +
+        `Harga Lama: ${formatRupiah(oldPrice)}\n` +
+        `Harga Baru: ${formatRupiah(newPrice)}\n` +
+        `Perubahan: ${formatRupiah(diff)}\n` +
+        `Keuntungan/Unit: ${formatRupiah(product.profitPerUnit)}\n` +
+        `Alasan: ${reason || 'Tidak ada alasan'}`);
+}
+
+function saveModalPriceChange() {
+  if (!canEditProducts()) {
+    alert("Akses ditolak!");
+    return;
+  }
+  
+  const index = document.getElementById('editModalProductIndex').value;
+  const newPriceInput = document.getElementById('newModalPriceInput');
+  const newPrice = parseInt(newPriceInput.value);
+  const reason = document.getElementById('modalPriceChangeReason').value.trim();
+  
+  if (!newPrice || newPrice < 100) {
+    alert("Harga modal harus minimal Rp 100!");
+    return;
+  }
+  
+  const product = data.products[index];
+  const oldPrice = product.modalPrice;
+  
+  if (newPrice === oldPrice) {
+    alert("Harga modal baru sama dengan harga modal lama. Tidak ada perubahan.");
+    closeModal('editModalPriceModal');
+    return;
+  }
+  
+  product.profitPerUnit = product.price - newPrice;
+  
+  const historyEntry = {
+    productId: product.id,
+    productName: product.name,
+    type: 'modal',
+    oldPrice: oldPrice,
+    newPrice: newPrice,
+    change: newPrice - oldPrice,
+    percentChange: ((newPrice - oldPrice) / oldPrice * 100).toFixed(1),
+    reason: reason || 'Tidak ada alasan',
+    changedBy: currentUser.name,
+    changedAt: new Date().toISOString()
+  };
+  
+  data.priceHistory.push(historyEntry);
+  saveData("priceHistory", data.priceHistory);
+  
+  product.modalPrice = newPrice;
+  saveData("products", data.products);
+  
+  closeModal('editModalPriceModal');
+  renderProducts();
+  
+  const changeType = newPrice > oldPrice ? "KENAIKAN" : "PENURUNAN";
+  const diff = Math.abs(newPrice - oldPrice);
+  alert(`${changeType} HARGA MODAL BERHASIL!\n\n` +
+        `Produk: ${product.name}\n` +
+        `Harga Modal Lama: ${formatRupiah(oldPrice)}\n` +
+        `Harga Modal Baru: ${formatRupiah(newPrice)}\n` +
+        `Perubahan: ${formatRupiah(diff)}\n` +
+        `Keuntungan/Unit Baru: ${formatRupiah(product.profitPerUnit)}\n` +
+        `Alasan: ${reason || 'Tidak ada alasan'}`);
+}
+
+function showPriceHistory() {
+  if (data.priceHistory.length === 0) {
+    alert("Belum ada riwayat perubahan harga.");
+    return;
+  }
+  
+  let historyText = "RIWAYAT PERUBAHAN HARGA:\n\n";
+  
+  const groupedHistory = {};
+  data.priceHistory.forEach(entry => {
+    if (!groupedHistory[entry.productName]) {
+      groupedHistory[entry.productName] = [];
+    }
+    groupedHistory[entry.productName].push(entry);
+  });
+  
+  Object.keys(groupedHistory).forEach(productName => {
+    historyText += `📦 ${productName}:\n`;
+    groupedHistory[productName].slice(-5).reverse().forEach((entry, i) => {
+      const date = new Date(entry.changedAt).toLocaleDateString('id-ID');
+      const time = new Date(entry.changedAt).toLocaleTimeString('id-ID');
+      const changeType = entry.change > 0 ? "▲ Naik" : "▼ Turun";
+      const changeColor = entry.change > 0 ? "🟥" : "🟩";
+      const priceType = entry.type === 'modal' ? 'Modal' : 'Jual';
+      
+      historyText += `  ${changeColor} ${date} ${time} (${priceType})\n`;
+      historyText += `     ${formatRupiah(entry.oldPrice)} → ${formatRupiah(entry.newPrice)}\n`;
+      historyText += `     ${changeType}: ${formatRupiah(Math.abs(entry.change))} (${Math.abs(entry.percentChange)}%)\n`;
+      historyText += `     Oleh: ${entry.changedBy}\n`;
+      if (entry.reason && entry.reason !== 'Tidak ada alasan') {
+        historyText += `     Alasan: ${entry.reason}\n`;
+      }
+      historyText += `\n`;
+    });
+    historyText += `\n`;
+  });
+  
+  alert(historyText);
+}
+
+// ==================== STOCK & SUPPLIER MANAGEMENT ====================
+function addStock() {
+  if (!canEditProducts()) {
+    alert("Akses ditolak!");
+    return;
+  }
+  
+  const index = document.getElementById('stockProductIndex').value;
+  const qtyInput = document.getElementById('addStockQty');
+  const qty = parseInt(qtyInput.value);
+  const newModalPrice = parseInt(document.getElementById('newModalPrice').value);
+  const supplierName = document.getElementById('supplierName').value.trim();
+  
+  if (!qty || qty <= 0) {
+    alert("Masukkan jumlah stok yang valid!");
+    return;
+  }
+  
+  if (!newModalPrice || newModalPrice < 100) {
+    alert("Harga modal harus minimal Rp 100!");
+    return;
+  }
+  
+  if (!supplierName) {
+    alert("Nama supplier harus diisi!");
+    return;
+  }
+  
+  const product = data.products[index];
+  const oldStock = product.stock;
+  const oldModalPrice = product.modalPrice;
+  const oldTotalValue = oldStock * oldModalPrice;
+  const newTotalValue = qty * newModalPrice;
+  
+  const totalStockAfter = oldStock + qty;
+  const totalValueAfter = oldTotalValue + newTotalValue;
+  const newWeightedAveragePrice = Math.round(totalValueAfter / totalStockAfter);
+  
+  product.stock = totalStockAfter;
+  product.modalPrice = newWeightedAveragePrice;
+  product.profitPerUnit = product.price - newWeightedAveragePrice;
+  product.supplier = supplierName;
+  
+  const supplierEntry = {
+    id: Date.now(),
+    productId: product.id,
+    productName: product.name,
+    supplier: supplierName,
+    quantity: qty,
+    purchasePrice: newModalPrice,
+    weightedAveragePrice: newWeightedAveragePrice,
+    totalCost: qty * newModalPrice,
+    oldStock: oldStock,
+    oldModalPrice: oldModalPrice,
+    newStock: totalStockAfter,
+    newModalPrice: newWeightedAveragePrice,
+    calculation: {
+      oldTotalValue: oldTotalValue,
+      newTotalValue: newTotalValue,
+      totalValueAfter: totalValueAfter
+    },
+    date: new Date().toISOString(),
+    addedBy: currentUser.name
+  };
+  
+  data.supplierHistory.push(supplierEntry);
+  saveData("supplierHistory", data.supplierHistory);
+  saveData("products", data.products);
+  
+  addStockHistory(
+    product.id,
+    product.name,
+    'restock',
+    qty,
+    oldStock,
+    totalStockAfter,
+    `Restock dari ${supplierName}. Harga beli: ${formatRupiah(newModalPrice)}, ` +
+    `Harga modal rata2: ${formatRupiah(oldModalPrice)} → ${formatRupiah(newWeightedAveragePrice)}`,
+    supplierEntry.id
+  );
+  
+  closeModal('addStockModal');
+  renderProducts();
+  renderSupplierHistory();
+  
+  alert(`✅ RESTOK BERHASIL!\n\n` +
+        `Produk: ${product.name}\n` +
+        `Supplier: ${supplierName}\n` +
+        `Jumlah: ${qty} unit\n` +
+        `────────────────────\n` +
+        `📊 PERHITUNGAN HARGA MODAL:\n` +
+        `Stok sebelumnya: ${oldStock} unit\n` +
+        `Harga modal lama: ${formatRupiah(oldModalPrice)}/unit\n` +
+        `Nilai stok lama: ${formatRupiah(oldTotalValue)}\n` +
+        `────────────────────\n` +
+        `Harga beli baru: ${formatRupiah(newModalPrice)}/unit\n` +
+        `Nilai restock: ${formatRupiah(newTotalValue)}\n` +
+        `────────────────────\n` +
+        `Total stok: ${totalStockAfter} unit\n` +
+        `Total nilai: ${formatRupiah(totalValueAfter)}\n` +
+        `📈 HARGA MODAL BARU: ${formatRupiah(newWeightedAveragePrice)}/unit\n` +
+        `────────────────────\n` +
+        `Keuntungan/unit: ${formatRupiah(product.profitPerUnit)}\n` +
+        `Margin: ${((product.profitPerUnit / newWeightedAveragePrice) * 100).toFixed(1)}%`);
+}
+
+function showWeightedAverageCalculation(supplierEntryId) {
+  const entry = data.supplierHistory.find(e => e.id === supplierEntryId);
+  
+  if (!entry) {
+    alert("Data tidak ditemukan!");
+    return;
+  }
+  
+  const calculation = entry.calculation || {};
+  
+  let detailText = `📊 DETAIL PERHITUNGAN WEIGHTED AVERAGE\n\n`;
+  detailText += `Produk: ${entry.productName}\n`;
+  detailText += `Tanggal: ${new Date(entry.date).toLocaleDateString('id-ID')}\n`;
+  detailText += `Supplier: ${entry.supplier}\n`;
+  detailText += `────────────────────\n\n`;
+  detailText += `SEBELUM RESTOK:\n`;
+  detailText += `Stok: ${entry.oldStock} unit\n`;
+  detailText += `Harga Modal: ${formatRupiah(entry.oldModalPrice)}/unit\n`;
+  detailText += `Total Nilai: ${formatRupiah(calculation.oldTotalValue || entry.oldStock * entry.oldModalPrice)}\n\n`;
+  detailText += `RESTOK BARU:\n`;
+  detailText += `Jumlah: ${entry.quantity} unit\n`;
+  detailText += `Harga Beli: ${formatRupiah(entry.purchasePrice)}/unit\n`;
+  detailText += `Nilai Restock: ${formatRupiah(entry.totalCost)}\n\n`;
+  detailText += `SETELAH RESTOK:\n`;
+  detailText += `Total Stok: ${entry.newStock} unit\n`;
+  detailText += `Total Nilai: ${formatRupiah(calculation.totalValueAfter || (calculation.oldTotalValue + entry.totalCost))}\n\n`;
+  detailText += `📈 HASIL PERHITUNGAN:\n`;
+  detailText += `Harga Modal Baru = Total Nilai ÷ Total Stok\n`;
+  detailText += `= ${formatRupiah(calculation.totalValueAfter)} ÷ ${entry.newStock} unit\n`;
+  detailText += `= ${formatRupiah(entry.weightedAveragePrice)}/unit\n\n`;
+  detailText += `Harga modal berubah dari ${formatRupiah(entry.oldModalPrice)} menjadi ${formatRupiah(entry.newModalPrice)}`;
+  
+  alert(detailText);
+}
+
+// ==================== PROFIT ANALYSIS ====================
+function renderProfitAnalysis() {
+  const profitBody = document.getElementById("profitBody");
+  profitBody.innerHTML = '';
+  
+  let totalRealProfit = 0;
+  let totalPotentialProfit = 0;
+  let totalMargin = 0;
+  let bestSeller = { name: '-', profit: 0 };
+  
+  const salesByProduct = {};
+  data.sales.forEach(sale => {
+    if (!salesByProduct[sale.productId]) {
+      salesByProduct[sale.productId] = { qty: 0, totalProfit: 0 };
+    }
+    const product = data.products.find(p => p.id === sale.productId);
+    if (product) {
+      const profitPerUnit = sale.price - product.modalPrice;
+      salesByProduct[sale.productId].qty += sale.qty;
+      salesByProduct[sale.productId].totalProfit += profitPerUnit * sale.qty;
+    }
+  });
+  
+  data.products.forEach(product => {
+    const profitPerUnit = product.profitPerUnit || (product.price - product.modalPrice);
+    const margin = ((profitPerUnit / product.modalPrice) * 100).toFixed(1);
+    const potentialProfit = profitPerUnit * product.stock;
+    
+    const salesData = salesByProduct[product.id] || { qty: 0, totalProfit: 0 };
+    const realProfit = salesData.totalProfit;
+    
+    totalRealProfit += realProfit;
+    totalPotentialProfit += potentialProfit;
+    totalMargin += parseFloat(margin);
+    
+    if (realProfit > bestSeller.profit) {
+      bestSeller = { name: product.name, profit: realProfit };
+    }
+    
+    let profitClass = 'profit-medium';
+    if (profitPerUnit > 10000) profitClass = 'profit-high';
+    else if (profitPerUnit < 3000) profitClass = 'profit-low';
+    
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td>${product.name}</td>
+      <td>${formatRupiah(product.modalPrice)}</td>
+      <td>${formatRupiah(product.price)}</td>
+      <td class="${profitClass}">${formatRupiah(profitPerUnit)}</td>
+      <td>${margin}%</td>
+      <td>${product.stock}</td>
+      <td>${formatRupiah(potentialProfit)}</td>
+      <td>${salesData.qty}</td>
+      <td>${formatRupiah(realProfit)}</td>
+    `;
+    profitBody.appendChild(row);
+  });
+  
+  document.getElementById("totalRealProfit").textContent = formatRupiah(totalRealProfit);
+  document.getElementById("totalPotentialProfit").textContent = formatRupiah(totalPotentialProfit);
+  document.getElementById("averageMargin").textContent = data.products.length > 0 ? (totalMargin / data.products.length).toFixed(1) + '%' : '0%';
+  document.getElementById("bestSeller").textContent = bestSeller.name;
+}
+
+function exportProfitReport() {
+  let report = "LAPORAN ANALISIS KEUNTUNGAN\n";
+  report += "Tanggal: " + new Date().toLocaleDateString('id-ID') + "\n";
+  report += "=".repeat(50) + "\n\n";
+  
+  let totalRealProfit = 0;
+  let totalPotentialProfit = 0;
+  
+  data.products.forEach(product => {
+    const profitPerUnit = product.profitPerUnit || (product.price - product.modalPrice);
+    const margin = ((profitPerUnit / product.modalPrice) * 100).toFixed(1);
+    const potentialProfit = profitPerUnit * product.stock;
+    
+    report += `Produk: ${product.name}\n`;
+    report += `  Harga Modal: ${formatRupiah(product.modalPrice)}\n`;
+    report += `  Harga Jual: ${formatRupiah(product.price)}\n`;
+    report += `  Keuntungan/Unit: ${formatRupiah(profitPerUnit)}\n`;
+    report += `  Margin: ${margin}%\n`;
+    report += `  Stok: ${product.stock}\n`;
+    report += `  Potensi Keuntungan: ${formatRupiah(potentialProfit)}\n`;
+    report += "-".repeat(30) + "\n";
+    
+    totalPotentialProfit += potentialProfit;
+  });
+  
+  data.sales.forEach(sale => {
+    const product = data.products.find(p => p.id === sale.productId);
+    if (product) {
+      totalRealProfit += (sale.price - product.modalPrice) * sale.qty;
+    }
+  });
+  
+  report += "\nRINGKASAN:\n";
+  report += `Total Keuntungan Real: ${formatRupiah(totalRealProfit)}\n`;
+  report += `Total Potensi Keuntungan: ${formatRupiah(totalPotentialProfit)}\n`;
+  report += `Jumlah Produk: ${data.products.length}\n`;
+  
+  const blob = new Blob([report], { type: 'text/plain' });
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `laporan-keuntungan-${new Date().toISOString().split('T')[0]}.txt`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  window.URL.revokeObjectURL(url);
+  
+  alert("Laporan berhasil diexport!");
+}
+
+// ==================== SUPPLIER HISTORY ====================
+function renderSupplierHistory() {
+  const supplierBody = document.getElementById("supplierBody");
+  supplierBody.innerHTML = '';
+  
+  let totalRestock = 0;
+  let totalSpending = 0;
+  const suppliers = new Set();
+  const productRestocks = {};
+  
+  data.supplierHistory.forEach((entry, index) => {
+    totalRestock += entry.quantity;
+    totalSpending += entry.totalCost;
+    suppliers.add(entry.supplier);
+    
+    if (!productRestocks[entry.productName]) {
+      productRestocks[entry.productName] = 0;
+    }
+    productRestocks[entry.productName] += entry.quantity;
+    
+    const date = new Date(entry.date).toLocaleDateString('id-ID');
+    const time = new Date(entry.date).toLocaleTimeString('id-ID');
+    
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td>${date} ${time}</td>
+      <td>${entry.productName}</td>
+      <td>${entry.supplier}</td>
+      <td>${entry.quantity}</td>
+      <td>
+        ${formatRupiah(entry.purchasePrice)}
+        <br>
+        <small style="color: var(--gray);">(Avg: ${formatRupiah(entry.weightedAveragePrice)})</small>
+      </td>
+      <td>${formatRupiah(entry.totalCost)}</td>
+      <td>
+        <button class="action-btn" onclick="showWeightedAverageCalculation(${entry.id})" 
+                style="background: #8b5cf6; margin-bottom: 5px;" title="Detail Perhitungan">
+          <i class="fas fa-calculator"></i>
+        </button>
+        <button class="action-btn btn-danger" onclick="deleteSupplierEntry(${index})">
+          <i class="fas fa-trash"></i>
+        </button>
+      </td>
+    `;
+    supplierBody.appendChild(row);
+  });
+  
+  document.getElementById("totalRestock").textContent = totalRestock;
+  document.getElementById("totalSpending").textContent = formatRupiah(totalSpending);
+  document.getElementById("totalSuppliers").textContent = suppliers.size;
+  
+  let mostRestocked = '-';
+  let maxRestocks = 0;
+  Object.keys(productRestocks).forEach(productName => {
+    if (productRestocks[productName] > maxRestocks) {
+      maxRestocks = productRestocks[productName];
+      mostRestocked = productName;
+    }
+  });
+  document.getElementById("mostRestocked").textContent = mostRestocked;
+}
+
+function deleteSupplierEntry(index) {
+  if (!canEditProducts()) {
+    alert("Hanya Manager atau Admin yang dapat menghapus data supplier!");
+    return;
+  }
+  
+  if (!confirm("Apakah Anda yakin ingin menghapus data restock ini?")) {
+    return;
+  }
+  
+  data.supplierHistory.splice(index, 1);
+  saveData("supplierHistory", data.supplierHistory);
+  renderSupplierHistory();
+  alert("Data restock berhasil dihapus!");
+}
+
+// ==================== SALES HISTORY ====================
+function setSalesFilter(period, startDate = null, endDate = null) {
+  salesFilter.period = period;
+  salesFilter.startDate = startDate;
+  salesFilter.endDate = endDate;
+  
+  renderSalesHistory();
+  updateSalesFilterDisplay();
+}
+
+function updateSalesFilterDisplay() {
+  const filterDisplay = document.getElementById('salesFilterDisplay');
+  if (!filterDisplay) return;
+  
+  let displayText = '';
+  const now = new Date();
+  
+  switch(salesFilter.period) {
+    case 'today':
+      displayText = 'Hari Ini';
+      break;
+    case 'yesterday':
+      displayText = 'Kemarin';
+      break;
+    case 'week':
+      displayText = '7 Hari Terakhir';
+      break;
+    case 'month':
+      displayText = '30 Hari Terakhir';
+      break;
+    case 'custom':
+      if (salesFilter.startDate && salesFilter.endDate) {
+        const start = new Date(salesFilter.startDate).toLocaleDateString('id-ID');
+        const end = new Date(salesFilter.endDate).toLocaleDateString('id-ID');
+        displayText = `${start} - ${end}`;
+      } else {
+        displayText = 'Rentang Kustom';
+      }
+      break;
+    default:
+      displayText = 'Semua Data';
+  }
+  
+  filterDisplay.textContent = displayText;
+}
+
+function getFilteredSales() {
+  let filteredSales = [...data.sales];
+  
+  const now = new Date();
+  let startDate, endDate;
+  
+  switch(salesFilter.period) {
+    case 'today':
+      startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      endDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59);
+      break;
+    case 'yesterday':
+      const yesterday = new Date(now);
+      yesterday.setDate(yesterday.getDate() - 1);
+      startDate = new Date(yesterday.getFullYear(), yesterday.getMonth(), yesterday.getDate());
+      endDate = new Date(yesterday.getFullYear(), yesterday.getMonth(), yesterday.getDate(), 23, 59, 59);
+      break;
+    case 'week':
+      startDate = new Date(now);
+      startDate.setDate(startDate.getDate() - 7);
+      break;
+    case 'month':
+      startDate = new Date(now);
+      startDate.setDate(startDate.getDate() - 30);
+      break;
+    case 'custom':
+      if (salesFilter.startDate) {
+        startDate = new Date(salesFilter.startDate);
+        startDate.setHours(0, 0, 0, 0);
+      }
+      if (salesFilter.endDate) {
+        endDate = new Date(salesFilter.endDate);
+        endDate.setHours(23, 59, 59, 999);
+      }
+      break;
+  }
+  
+  if (startDate) {
+    filteredSales = filteredSales.filter(sale => new Date(sale.date) >= startDate);
+  }
+  if (endDate) {
+    filteredSales = filteredSales.filter(sale => new Date(sale.date) <= endDate);
+  }
+  
+  filteredSales.sort((a, b) => new Date(b.date) - new Date(a.date));
+  
+  return filteredSales;
+}
+
+function openCustomFilterModal() {
+  const today = new Date().toISOString().split('T')[0];
+  const lastMonth = new Date();
+  lastMonth.setDate(lastMonth.getDate() - 30);
+  const lastMonthStr = lastMonth.toISOString().split('T')[0];
+  
+  document.getElementById('filterStartDate').value = lastMonthStr;
+  document.getElementById('filterEndDate').value = today;
+  openModal('customFilterModal');
+}
+
+function applyCustomFilter() {
+  const startDate = document.getElementById('filterStartDate').value;
+  const endDate = document.getElementById('filterEndDate').value;
+  
+  if (!startDate || !endDate) {
+    alert('Harap pilih tanggal mulai dan tanggal akhir!');
+    return;
+  }
+  
+  if (new Date(startDate) > new Date(endDate)) {
+    alert('Tanggal mulai tidak boleh lebih besar dari tanggal akhir!');
+    return;
+  }
+  
+  setSalesFilter('custom', startDate, endDate);
+  closeModal('customFilterModal');
+}
+
+function renderSalesHistory() {
+  const salesHistoryBody = document.getElementById("salesHistoryBody");
+  if (!salesHistoryBody) return;
+  
+  salesHistoryBody.innerHTML = '';
+  
+  const filteredSales = getFilteredSales();
+  
+  let totalQty = 0;
+  let totalRevenue = 0;
+  let totalProfit = 0;
+  let expiredCount = 0;
+  
+  filteredSales.forEach((sale, index) => {
+    const saleDate = new Date(sale.date);
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+    const isExpired = saleDate < thirtyDaysAgo;
+    
+    if (isExpired) {
+      expiredCount++;
+    }
+    
+    const product = data.products.find(p => p.id === sale.productId);
+    const modalPrice = product ? product.modalPrice : 0;
+    const profit = (sale.price - modalPrice) * sale.qty;
+    
+    totalQty += sale.qty;
+    totalRevenue += sale.total;
+    totalProfit += profit;
+    
+    const row = document.createElement('tr');
+    if (isExpired) {
+      row.classList.add('sale-expired');
+    }
+    
+    row.innerHTML = `
+      <td>${saleDate.toLocaleDateString('id-ID')} ${saleDate.toLocaleTimeString('id-ID')}</td>
+      <td>${sale.name}</td>
+      <td>${sale.qty}</td>
+      <td>${formatRupiah(sale.price)}</td>
+      <td>${formatRupiah(modalPrice)}</td>
+      <td>${formatRupiah(profit)}</td>
+      <td>${formatRupiah(sale.total)}</td>
+      <td>${sale.seller}</td>
+      <td>
+        ${isExpired 
+          ? '<span style="color: var(--danger); font-weight: 600;">EXPIRED</span>' 
+          : '<span style="color: var(--success); font-weight: 600;">AKTIF</span>'}
+      </td>
+    `;
+    salesHistoryBody.appendChild(row);
+  });
+  
+  const summaryElement = document.getElementById('salesSummary');
+  if (summaryElement) {
+    summaryElement.innerHTML = `
+      <div style="display: flex; gap: 20px; flex-wrap: wrap; margin-top: 15px; padding: 15px; background: #f8fafc; border-radius: 8px;">
+        <div>
+          <div style="font-size: 12px; color: var(--gray);">Total Transaksi</div>
+          <div style="font-size: 18px; font-weight: 600;">${filteredSales.length}</div>
+        </div>
+        <div>
+          <div style="font-size: 12px; color: var(--gray);">Total Terjual</div>
+          <div style="font-size: 18px; font-weight: 600;">${totalQty} unit</div>
+        </div>
+        <div>
+          <div style="font-size: 12px; color: var(--gray);">Total Pendapatan</div>
+          <div style="font-size: 18px; font-weight: 600;">${formatRupiah(totalRevenue)}</div>
+        </div>
+        <div>
+          <div style="font-size: 12px; color: var(--gray);">Total Keuntungan</div>
+          <div style="font-size: 18px; font-weight: 600;">${formatRupiah(totalProfit)}</div>
+        </div>
+      </div>
+    `;
+  }
+  
+  const badge = document.getElementById('expiredBadge');
+  if (badge) {
+    if (expiredCount > 0) {
+      badge.textContent = expiredCount;
+      badge.style.display = 'inline-block';
+    } else {
+      badge.style.display = 'none';
+    }
+  }
+}
+
+function checkExpiredSales() {
+  const thirtyDaysAgo = new Date();
+  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+  
+  const expiredSales = data.sales.filter(sale => new Date(sale.date) < thirtyDaysAgo);
+  
+  if (expiredSales.length > 0) {
+    const badge = document.getElementById('expiredBadge');
+    badge.textContent = expiredSales.length;
+    badge.style.display = 'inline-block';
+  }
+}
+
+function clearExpiredSales() {
+  if (!confirm('Hapus semua data penjualan yang sudah expired (lebih dari 30 hari)?\n\nData yang dihapus tidak dapat dikembalikan.')) {
+    return;
+  }
+  
+  const thirtyDaysAgo = new Date();
+  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+  
+  const activeSales = data.sales.filter(sale => new Date(sale.date) >= thirtyDaysAgo);
+  const expiredCount = data.sales.length - activeSales.length;
+  
+  if (expiredCount === 0) {
+    alert('Tidak ada data yang expired.');
+    return;
+  }
+  
+  data.sales = activeSales;
+  saveData("sales", data.sales);
+  
+  renderSalesHistory();
+  drawChart();
+  
+  alert(`${expiredCount} data penjualan expired telah dihapus.\n\nData aktif: ${data.sales.length} transaksi`);
+}
+
+function exportFilteredSales() {
+  const filteredSales = getFilteredSales();
+  
+  if (filteredSales.length === 0) {
+    alert('Tidak ada data penjualan untuk diekspor!');
+    return;
+  }
+  
+  let exportText = `LAPORAN PENJUALAN\n`;
+  exportText += `Periode: ${document.getElementById('salesFilterDisplay').textContent}\n`;
+  exportText += `Tanggal Export: ${new Date().toLocaleDateString('id-ID')}\n`;
+  exportText += '='.repeat(60) + '\n\n';
+  
+  let totalQty = 0;
+  let totalRevenue = 0;
+  let totalProfit = 0;
+  
+  filteredSales.forEach(sale => {
+    const product = data.products.find(p => p.id === sale.productId);
+    const modalPrice = product ? product.modalPrice : 0;
+    const profit = (sale.price - modalPrice) * sale.qty;
+    
+    totalQty += sale.qty;
+    totalRevenue += sale.total;
+    totalProfit += profit;
+    
+    const date = new Date(sale.date);
+    exportText += `Tanggal: ${date.toLocaleDateString('id-ID')} ${date.toLocaleTimeString('id-ID')}\n`;
+    exportText += `Produk: ${sale.name}\n`;
+    exportText += `Jumlah: ${sale.qty} unit\n`;
+    exportText += `Harga: ${formatRupiah(sale.price)}\n`;
+    exportText += `Modal: ${formatRupiah(modalPrice)}\n`;
+    exportText += `Keuntungan: ${formatRupiah(profit)}\n`;
+    exportText += `Total: ${formatRupiah(sale.total)}\n`;
+    exportText += `Kasir: ${sale.seller}\n`;
+    exportText += '-'.repeat(40) + '\n';
+  });
+  
+  exportText += '\nRINGKASAN:\n';
+  exportText += `Total Transaksi: ${filteredSales.length}\n`;
+  exportText += `Total Unit Terjual: ${totalQty}\n`;
+  exportText += `Total Pendapatan: ${formatRupiah(totalRevenue)}\n`;
+  exportText += `Total Keuntungan: ${formatRupiah(totalProfit)}\n`;
+  
+  const blob = new Blob([exportText], { type: 'text/plain' });
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `laporan-penjualan-${new Date().toISOString().split('T')[0]}.txt`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  window.URL.revokeObjectURL(url);
+  
+  alert(`Laporan penjualan berhasil diekspor!\n${filteredSales.length} transaksi`);
+}
+
+function toggleFilterDropdown() {
+  const dropdown = document.getElementById('filterDropdown');
+  dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+}
+
+// ==================== WHITELIST MANAGEMENT ====================
+function openAddIPModal() {
+  if (!canEditProducts()) {
+    alert("Hanya Manager atau Admin yang dapat mengelola whitelist IP!");
+    return;
+  }
+  
+  document.getElementById('ipAddress').value = '';
+  document.getElementById('ipDescription').value = '';
+  document.getElementById('ipStatus').value = 'active';
+  openModal('addIPModal');
+}
+
+function saveIP() {
+  const ipAddress = document.getElementById('ipAddress').value.trim();
+  const description = document.getElementById('ipDescription').value.trim();
+  const status = document.getElementById('ipStatus').value;
+  
+  if (!ipAddress) {
+    alert("IP Address harus diisi!");
+    return;
+  }
+  
+  const ipPattern = /^(\d{1,3}\.){3}\d{1,3}$/;
+  if (!ipPattern.test(ipAddress)) {
+    alert("Format IP Address tidak valid!");
+    return;
+  }
+  
+  if (data.whitelistIPs.some(ip => ip.ip === ipAddress)) {
+    alert("IP Address sudah ada dalam whitelist!");
+    return;
+  }
+  
+  const newIP = {
+    ip: ipAddress,
+    description: description || "Tidak ada deskripsi",
+    status: status,
+    addedBy: currentUser.name,
+    addedAt: new Date().toISOString()
+  };
+  
+  data.whitelistIPs.push(newIP);
+  saveData("whitelistIPs", data.whitelistIPs);
+  
+  closeModal('addIPModal');
+  renderWhitelist();
+  checkIPAccess();
+  
+  alert(`IP ${ipAddress} berhasil ditambahkan ke whitelist!`);
+}
+
+function toggleIPStatus(ipAddress) {
+  if (!canEditProducts()) {
+    alert("Hanya Manager atau Admin yang dapat mengelola whitelist IP!");
+    return;
+  }
+  
+  const ip = data.whitelistIPs.find(ip => ip.ip === ipAddress);
+  if (ip) {
+    ip.status = ip.status === 'active' ? 'inactive' : 'active';
+    saveData("whitelistIPs", data.whitelistIPs);
+    renderWhitelist();
+    checkIPAccess();
+  }
+}
+
+function removeIP(ipAddress) {
+  if (!canEditProducts()) {
+    alert("Hanya Manager atau Admin yang dapat mengelola whitelist IP!");
+    return;
+  }
+  
+  if (!confirm(`Apakah Anda yakin ingin menghapus IP ${ipAddress} dari whitelist?`)) {
+    return;
+  }
+  
+  data.whitelistIPs = data.whitelistIPs.filter(ip => ip.ip !== ipAddress);
+  saveData("whitelistIPs", data.whitelistIPs);
+  renderWhitelist();
+  checkIPAccess();
+  
+  alert(`IP ${ipAddress} berhasil dihapus dari whitelist!`);
+}
+
+function renderWhitelist() {
+  const whitelistBody = document.getElementById("whitelistBody");
+  whitelistBody.innerHTML = '';
+  
+  data.whitelistIPs.forEach(ip => {
+    const date = new Date(ip.addedAt).toLocaleDateString('id-ID');
+    
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td>
+        <strong>${ip.ip}</strong>
+        ${ip.ip === currentIP ? ' <span class="ip-tag">IP Anda</span>' : ''}
+      </td>
+      <td>${ip.description}</td>
+      <td>${date}</td>
+      <td>${ip.addedBy}</td>
+      <td>
+        <span style="color: ${ip.status === 'active' ? '#10b981' : '#ef4444'}; font-weight: 600;">
+          ${ip.status === 'active' ? 'AKTIF' : 'NONAKTIF'}
+        </span>
+      </td>
+      <td>
+        <button class="action-btn ${ip.status === 'active' ? 'btn-secondary' : 'btn-primary'}" 
+                onclick="toggleIPStatus('${ip.ip}')">
+          ${ip.status === 'active' ? 'Nonaktifkan' : 'Aktifkan'}
+        </button>
+        <button class="action-btn btn-danger" onclick="removeIP('${ip.ip}')">
+          <i class="fas fa-trash"></i>
+        </button>
+      </td>
+    `;
+    whitelistBody.appendChild(row);
+  });
+}
+
+// ==================== LAPORAN HARGA MODAL ====================
+function showModalPriceReport() {
+  let report = "LAPORAN HARGA MODAL PRODUK\n";
+  report += "Tanggal: " + new Date().toLocaleDateString('id-ID') + "\n";
+  report += "=".repeat(60) + "\n\n";
+  
+  data.products.forEach(product => {
+    const supplierEntries = data.supplierHistory.filter(e => e.productId === product.id);
+    const totalRestock = supplierEntries.reduce((sum, e) => sum + e.quantity, 0);
+    const totalSpent = supplierEntries.reduce((sum, e) => sum + e.totalCost, 0);
+    const avgPurchasePrice = totalRestock > 0 ? Math.round(totalSpent / totalRestock) : 0;
+    
+    report += `Produk: ${product.name}\n`;
+    report += `  Stok Saat Ini: ${product.stock} unit\n`;
+    report += `  Harga Modal Saat Ini: ${formatRupiah(product.modalPrice)}/unit\n`;
+    report += `  Total Restock: ${totalRestock} unit\n`;
+    report += `  Rata2 Harga Beli: ${formatRupiah(avgPurchasePrice)}/unit\n`;
+    report += `  Selisih: ${formatRupiah(product.modalPrice - avgPurchasePrice)}/unit\n`;
+    
+    if (supplierEntries.length > 0) {
+      report += `  Restock Terakhir:\n`;
+      supplierEntries.slice(-3).reverse().forEach(entry => {
+        const date = new Date(entry.date).toLocaleDateString('id-ID');
+        report += `    - ${date}: ${entry.quantity} unit @ ${formatRupiah(entry.purchasePrice)}\n`;
+      });
+    }
+    report += "-".repeat(40) + "\n";
+  });
+  
+  const blob = new Blob([report], { type: 'text/plain' });
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `laporan-harga-modal-${new Date().toISOString().split('T')[0]}.txt`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  window.URL.revokeObjectURL(url);
+  
+  alert("Laporan harga modal berhasil diekspor!");
+}
+
+// ==================== CHART ====================
+function drawChart() {
+  const ctx = document.getElementById('chart').getContext('2d');
+  
+  const thirtyDaysAgo = new Date();
+  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+  
+  const recentSales = data.sales.filter(sale => new Date(sale.date) >= thirtyDaysAgo);
+  
+  const salesData = {};
+  recentSales.forEach(sale => {
+    if (salesData[sale.name]) {
+      salesData[sale.name] += sale.qty;
+    } else {
+      salesData[sale.name] = sale.qty;
+    }
+  });
+  
+  const labels = Object.keys(salesData);
+  const dataValues = Object.values(salesData);
+  
+  if (chart) {
+    chart.destroy();
+  }
+  
+  chart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Jumlah Terjual (30 hari terakhir)',
+        data: dataValues,
+        backgroundColor: [
+          '#0f172a', '#1e293b', '#334155', '#475569', '#64748b'
+        ],
+        borderColor: '#0f172a',
+        borderWidth: 1,
+        borderRadius: 6,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          position: 'top',
+        },
+        tooltip: {
+          callbacks: {
+            label: function(context) {
+              return `${context.dataset.label}: ${context.raw} unit`;
+            }
+          }
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: {
+            callback: function(value) {
+              return value.toLocaleString('id-ID') + ' unit';
+            }
+          }
+        }
+      }
+    }
+  });
+}
+
+// ==================== INITIALIZATION ====================
+document.addEventListener('DOMContentLoaded', function() {
+  document.getElementById('mobileMenuToggle').addEventListener('click', toggleSidebar);
+  
+  document.getElementById('productSearch').addEventListener('input', function(e) {
+    renderProducts(e.target.value);
+  });
+  
+  document.getElementById('pass').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') login();
+  });
+  
+  document.getElementById('saleQty').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') sellProduct();
+  });
+  
+  document.getElementById('newProductPriceInput')?.addEventListener('input', updatePriceDiff);
+  document.getElementById('newModalPriceInput')?.addEventListener('input', updateModalPriceDiff);
+  
+  document.getElementById('newProductPriceInput')?.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') savePriceChange();
+  });
+  
+  document.getElementById('newModalPriceInput')?.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') saveModalPriceChange();
+  });
+  
+  document.querySelectorAll('.modal-overlay').forEach(modal => {
+    modal.addEventListener('click', function(e) {
+      if (e.target === this) {
+        this.style.display = 'none';
+      }
+    });
+  });
+  
+  window.addEventListener('resize', function() {
+    if (window.innerWidth > 1024) {
+      document.getElementById('sidebar').classList.remove('active');
+      document.getElementById('overlay').classList.remove('active');
+    }
+  });
+  
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('#filterDropdown') && !e.target.closest('button[onclick*="toggleFilterDropdown"]')) {
+      document.getElementById('filterDropdown').style.display = 'none';
+    }
+  });
+  
+  initializeSampleData();
+  
+  checkAuth();
+});
+
+function initializeSampleData() {
+  if (data.sales.length === 0) {
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+    
+    const sampleSales = [
+      { productId: 1, name: "Beras Premium 5kg", qty: 15, price: 65000, total: 975000, date: new Date().toISOString(), seller: "Admin" },
+      { productId: 2, name: "Minyak Goreng 2L", qty: 20, price: 32000, total: 640000, date: new Date().toISOString(), seller: "Kasir 1" },
+      { productId: 3, name: "Gula Pasir 1kg", qty: 30, price: 14000, total: 420000, date: new Date().toISOString(), seller: "Admin" },
+      { productId: 1, name: "Beras Premium 5kg", qty: 10, price: 65000, total: 650000, date: new Date().toISOString(), seller: "Kasir 2" },
+      { productId: 4, name: "Tepung Terigu 1kg", qty: 25, price: 12000, total: 300000, date: new Date(thirtyDaysAgo.getTime() - 5 * 24 * 60 * 60 * 1000).toISOString(), seller: "Admin" },
+      { productId: 5, name: "Mie Instan 1 dus", qty: 8, price: 85000, total: 680000, date: new Date(thirtyDaysAgo.getTime() - 10 * 24 * 60 * 60 * 1000).toISOString(), seller: "Kasir 1" },
+    ];
+    data.sales = sampleSales;
+    saveData("sales", data.sales);
+  }
+  
+  if (data.priceHistory.length === 0) {
+    const sampleHistory = [
+      {
+        productId: 1,
+        productName: "Beras Premium 5kg",
+        type: 'modal',
+        oldPrice: 50000,
+        newPrice: 55000,
+        change: 5000,
+        percentChange: 10.0,
+        reason: "Kenaikan harga supplier",
+        changedBy: "Manager",
+        changedAt: new Date().toISOString()
+      },
+      {
+        productId: 2,
+        productName: "Minyak Goreng 2L",
+        type: 'price',
+        oldPrice: 30000,
+        newPrice: 32000,
+        change: 2000,
+        percentChange: 6.7,
+        reason: "Penyesuaian harga pasar",
+        changedBy: "Manager",
+        changedAt: new Date().toISOString()
+      }
+    ];
+    data.priceHistory = sampleHistory;
+    saveData("priceHistory", data.priceHistory);
+  }
+  
+  if (data.supplierHistory.length === 0) {
+    const sampleSupplier = [
+      {
+        id: Date.now(),
+        productId: 1,
+        productName: "Beras Premium 5kg",
+        supplier: "Supplier A",
+        quantity: 100,
+        purchasePrice: 55000,
+        weightedAveragePrice: 55000,
+        totalCost: 5500000,
+        oldStock: 0,
+        oldModalPrice: 0,
+        newStock: 100,
+        newModalPrice: 55000,
+        calculation: {
+          oldTotalValue: 0,
+          newTotalValue: 5500000,
+          totalValueAfter: 5500000
+        },
+        date: new Date().toISOString(),
+        addedBy: "Manager"
+      },
+      {
+        id: Date.now() + 1,
+        productId: 2,
+        productName: "Minyak Goreng 2L",
+        supplier: "Supplier B",
+        quantity: 50,
+        purchasePrice: 28000,
+        weightedAveragePrice: 28000,
+        totalCost: 1400000,
+        oldStock: 0,
+        oldModalPrice: 0,
+        newStock: 50,
+        newModalPrice: 28000,
+        calculation: {
+          oldTotalValue: 0,
+          newTotalValue: 1400000,
+          totalValueAfter: 1400000
+        },
+        date: new Date().toISOString(),
+        addedBy: "Manager"
+      }
+    ];
+    data.supplierHistory = sampleSupplier;
+    saveData("supplierHistory", data.supplierHistory);
+  }
+  
+  if (data.stockHistory.length === 0) {
+    const sampleStockHistory = [
+      {
+        id: Date.now(),
+        productId: 1,
+        productName: "Beras Premium 5kg",
+        type: 'restock',
+        quantity: 100,
+        oldStock: 0,
+        newStock: 100,
+        reason: "Stok awal dari Supplier A",
+        referenceId: data.supplierHistory[0]?.id,
+        changedBy: "Manager",
+        changedAt: new Date().toISOString()
+      },
+      {
+        id: Date.now() + 1,
+        productId: 2,
+        productName: "Minyak Goreng 2L",
+        type: 'restock',
+        quantity: 50,
+        oldStock: 0,
+        newStock: 50,
+        reason: "Stok awal dari Supplier B",
+        referenceId: data.supplierHistory[1]?.id,
+        changedBy: "Manager",
+        changedAt: new Date().toISOString()
+      }
+    ];
+    data.stockHistory = sampleStockHistory;
+    saveData("stockHistory", data.stockHistory);
+  }
+}
+</script>
+</body>
+</html>
